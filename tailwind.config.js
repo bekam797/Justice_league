@@ -2,8 +2,13 @@
 // @ts-check
 /** @type {import("tailwindcss").Config } */
 module.exports = {
+  darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        justice: ['var(--font-justice)'],
+        helvetica: ['var(--font-helvetica)'],
+      },
       typography: ({ theme }) => ({
         DEFAULT: {
           css: {

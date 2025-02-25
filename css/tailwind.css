@@ -15,9 +15,9 @@
   --color-primary-100: oklch(0.948 0.028 342.258);
   --color-primary-200: oklch(0.899 0.061 343.231);
   --color-primary-300: oklch(0.823 0.12 346.018);
-  --color-primary-400: oklch(0.718 0.202 349.761);
-  --color-primary-500: oklch(0.656 0.241 354.308);
-  --color-primary-600: oklch(0.592 0.249 0.584);
+  --color-primary-400: #bfad60;
+  --color-primary-500: #bfad60;
+  --color-primary-600: #bfad60;
   --color-primary-700: oklch(0.525 0.223 3.958);
   --color-primary-800: oklch(0.459 0.187 3.815);
   --color-primary-900: oklch(0.408 0.153 2.432);
@@ -55,6 +55,11 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
+:root {
+  --header-height: 4rem; /* Adjust this value to match your header height */
+  --footer-height: 4rem; /* Adjust this value to match your footer height */
+}
+
 @layer base {
   *,
   ::after,
@@ -74,6 +79,11 @@
     outline: 2px solid;
     border-radius: var(--radius-sm);
     outline-color: var(--color-primary-500);
+  }
+
+  /* Add this new rule for dark mode links */
+  .dark .prose a {
+    color: #bfad60 !important;
   }
 }
 
@@ -132,4 +142,19 @@ input:-webkit-autofill:focus {
 .linkicon {
   display: inline-block;
   vertical-align: middle;
+}
+
+.loader {
+  width: 24px;
+  aspect-ratio: 4;
+  background: radial-gradient(circle closest-side, #fff 90%, #000) 0 / calc(100% / 3) 100% space;
+  clip-path: inset(0 100% 0 0);
+  animation: l1 1s steps(4) infinite;
+  opacity: 50%;
+}
+
+@keyframes l1 {
+  to {
+    clip-path: inset(0 -34% 0 0);
+  }
 }
