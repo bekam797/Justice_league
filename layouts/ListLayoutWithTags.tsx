@@ -1,6 +1,3 @@
-'use client'
-
-import { usePathname } from 'next/navigation'
 import { CoreContent } from 'pliny/utils/contentlayer'
 import type { Blog } from 'contentlayer/generated'
 import { BlogFilter } from '@/components/blog/blog-filter'
@@ -8,46 +5,37 @@ import FeaturedBlogCard from '@/components/blog/featured-blog-card'
 import BlogGrid from '@/components/blog/blog-grid'
 import Pagination from '@/components/blog/pagination'
 import { motion } from 'framer-motion'
+import { CategorySelect } from '@/components/blog/category-select'
+
+type BlogWithFeatured = CoreContent<Blog> & { featured?: boolean }
 
 interface PaginationProps {
   totalPages: number
   currentPage: number
 }
 interface ListLayoutProps {
-  posts: CoreContent<Blog>[]
-  title: string
-  initialDisplayPosts?: CoreContent<Blog>[]
+  posts: BlogWithFeatured[]
+  initialDisplayPosts?: BlogWithFeatured[]
   pagination?: PaginationProps
 }
 
 export default function ListLayoutWithTags({
   posts,
-  title,
   initialDisplayPosts = [],
   pagination,
 }: ListLayoutProps) {
-  const pathname = usePathname()
   const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts
-  const [featuredPost, ...remainingPosts] = displayPosts
+  const featuredPost = displayPosts.find((post) => post?.featured === true)
+  const remainingPosts = featuredPost
+    ? displayPosts.filter((post) => post.slug !== featuredPost.slug)
+    : displayPosts
 
-  const blogFilters = ['All Posts', 'Design', 'Development', 'Marketing', 'Business']
-
-  // Check if we're on the first page
   const isFirstPage = !pagination || pagination.currentPage === 1
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div>
       <div className="pt-28">
-        <BlogFilter
-          title="Blogs"
-          filters={blogFilters}
-          onFilterChange={(filter) => console.log(`Filter changed to: ${filter}`)}
-        />
+        <CategorySelect />
         {isFirstPage && featuredPost && (
           <FeaturedBlogCard
             title={featuredPost.title}
@@ -68,6 +56,6 @@ export default function ListLayoutWithTags({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

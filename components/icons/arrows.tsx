@@ -73,3 +73,67 @@ export function NextArrow(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function ArrowDownward(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M11.584 6.54158L2.49905 6.54158L6.76667 10.8092L6.00067 11.5833L0.417359 5.99994L6.00067 0.416626L6.76667 1.19065L2.49905 5.45829L11.584 5.45829L11.584 6.54158Z"
+        fill="white"
+      />
+    </svg>
+  )
+}
+
+export function ChevronRight(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <mask id="mask0_843_1434" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+        <rect x="32" width="32" height="32" transform="rotate(90 32 0)" fill="#D9D9D9" />
+      </mask>
+      <g mask="url(#mask0_843_1434)">
+        <path
+          d="M15.9992 17.7232L22.1325 11.5898L23.0762 12.5335L15.9992 19.6105L8.92217 12.5335L9.86584 11.5898L15.9992 17.7232Z"
+          fill="white"
+        />
+      </g>
+    </svg>
+  )
+}
+
+export function MenuIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <mask id="mask0_843_1443" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+        <rect width="32" height="32" fill="#D9D9D9" />
+      </mask>
+      <g mask="url(#mask0_843_1443)">
+        <path
+          d="M5.33203 23.0255V21.6921H26.6654V23.0255H5.33203ZM5.33203 16.6665V15.3331H26.6654V16.6665H5.33203ZM5.33203 10.3075V8.97412H26.6654V10.3075H5.33203Z"
+          fill="white"
+        />
+      </g>
+    </svg>
+  )
+}

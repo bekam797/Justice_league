@@ -1,4 +1,4 @@
-'use client'
+import { getCategories } from 'datamain/loaders'
 
 import { useState } from 'react'
 

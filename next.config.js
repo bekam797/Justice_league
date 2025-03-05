@@ -77,6 +77,12 @@ module.exports = () => {
           protocol: 'https',
           hostname: 'picsum.photos',
         },
+        {
+          protocol: 'http',
+          hostname: 'localhost',
+          port: '1337',
+          pathname: '/uploads/**',
+        },
       ],
       unoptimized,
     },

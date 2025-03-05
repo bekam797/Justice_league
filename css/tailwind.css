@@ -81,6 +81,10 @@
     outline-color: var(--color-primary-500);
   }
 
+  .prose {
+    margin: 0 !important;
+  }
+
   /* Add this new rule for dark mode links */
   .dark .prose a {
     color: #bfad60 !important;
@@ -157,4 +161,18 @@ input:-webkit-autofill:focus {
   to {
     clip-path: inset(0 -34% 0 0);
   }
+}
+
+.embla {
+  margin: 0;
+  padding: 0;
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+  gap: 0;
 }

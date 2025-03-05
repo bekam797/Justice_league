@@ -1,31 +1,56 @@
 import ListLayout from '@/layouts/ListLayoutWithTags'
-import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer'
-import { allBlogs } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
+import { getBlogPosts } from 'datamain/loaders'
+import { getStrapiMedia } from '../../../../lib/utils'
+import { PostData, StrapiMeta } from 'lib/blog-types'
 
-const POSTS_PER_PAGE = 5
+const POSTS_PER_PAGE = 10
 
-export const generateStaticParams = async () => {
-  const totalPages = Math.ceil(allBlogs.length / POSTS_PER_PAGE)
-  const paths = Array.from({ length: totalPages }, (_, i) => ({ page: (i + 1).toString() }))
+export async function generateStaticParams() {
+  const { meta } = await getBlogPosts(1, '', '', 1)
+  const pageCount = meta?.pagination?.pageCount ?? 1
 
-  return paths
+  return Array.from({ length: pageCount }, (_, i) => ({
+    page: (i + 1).toString(),
+  }))
 }
 
-export default async function Page(props: { params: Promise<{ page: string }> }) {
-  const params = await props.params
-  const posts = allCoreContent(sortPosts(allBlogs))
-  const pageNumber = parseInt(params.page as string)
-  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE)
+export default async function Page(props: {
+  params: { page: string }
+  searchParams: { query?: string; category?: string }
+}) {
+  const { params, searchParams } = props
+  const pageNumber = parseInt(params.page, 10)
+  const query = searchParams.query || ''
+  const category = searchParams.category || ''
 
-  // Return 404 for invalid page numbers or empty pages
-  if (pageNumber <= 0 || pageNumber > totalPages || isNaN(pageNumber)) {
+  if (isNaN(pageNumber) || pageNumber <= 0) {
     return notFound()
   }
-  const initialDisplayPosts = posts.slice(
-    POSTS_PER_PAGE * (pageNumber - 1),
-    POSTS_PER_PAGE * pageNumber
-  )
+
+  const { data: allStrapiPosts, meta } = (await getBlogPosts(
+    pageNumber,
+    query,
+    category,
+    POSTS_PER_PAGE
+  )) as unknown as { data: PostData[]; meta: StrapiMeta }
+
+  if (!allStrapiPosts) {
+    return notFound()
+  }
+
+  const formattedPosts = allStrapiPosts.map((post) => formatPost(post))
+
+  const filteredPosts = category
+    ? formattedPosts.filter((post) => post.tags.includes(category))
+    : formattedPosts
+
+  const startIndex = POSTS_PER_PAGE * (pageNumber - 1)
+  const endIndex = startIndex + POSTS_PER_PAGE
+  const initialDisplayPosts = filteredPosts.slice(startIndex, endIndex)
+
+  const totalPages = meta?.pagination?.pageCount || 1
+
   const pagination = {
     currentPage: pageNumber,
     totalPages: totalPages,
@@ -33,10 +58,31 @@ export default async function Page(props: { params: Promise<{ page: string }> })
 
   return (
     <ListLayout
-      posts={posts}
+      posts={filteredPosts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
-      title="All Posts"
     />
   )
+}
+
+function formatPost(post) {
+  return {
+    id: post.id,
+    title: post.title,
+    date: post.publishedAt,
+    tags: post.category ? [post.category.name] : [],
+    lastmod: post.updatedAt,
+    draft: false,
+    summary: post.description,
+    slug: post.slug,
+    path: `blog/${post.slug}`,
+    images: post.cover ? [getStrapiMedia(post.cover.url)] : [],
+    authors: post.author ? [post.author.name] : [],
+    type: 'Blog' as const,
+    readingTime: { text: '5 min read', minutes: 5, time: 300000, words: 1000 },
+    filePath: '',
+    toc: [],
+    structuredData: {},
+    featured: post.featured,
+  }
 }

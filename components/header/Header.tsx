@@ -43,6 +43,7 @@
 'use client'
 
 import { JusticeLogo } from '@/components/header/justice-logo'
+import { ChevronRight, MenuIcon } from '@/components/icons/arrows'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -69,30 +70,12 @@ export default function SiteHeader() {
         <div className="flex items-center gap-1">
           <button className="group flex h-[64px] cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] px-6">
             <span className="font-justice text-base text-white">EN</span>
-            <svg
-              width="12"
-              height="7"
-              viewBox="0 0 12 7"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1L6 6L11 1"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ChevronRight />
           </button>
 
           <button className="flex h-[64px] cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#3c380d] px-6">
             <span className="font-justice text-base text-white">Menu</span>
-            <div className="flex flex-col gap-[7px]">
-              <div className="h-[2px] w-6 bg-white"></div>
-              <div className="h-[2px] w-6 bg-white"></div>
-              <div className="h-[2px] w-6 bg-white"></div>
-            </div>
+            <MenuIcon />
           </button>
         </div>
       </div>
