@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { JusticeLogo } from '@/components/landing/svgs/justice-logo'
 import { MenuItem } from '@/components/landing/menu-item'
 import { LeagueLogo } from '@/components/landing/svgs/league-logo'
-import { LanguageSelector } from '@/components/landing/language-selector'
 
 const menuItems = [
   { id: 1, label: 'SERVICES', number: '01' },
@@ -115,9 +114,6 @@ export default function Home() {
               <LeagueLogo />
             </motion.div>
           </div>
-
-          {/* Language Selector */}
-          <LanguageSelector />
         </div>
       </main>
     </>
