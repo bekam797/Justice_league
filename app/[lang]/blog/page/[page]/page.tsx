@@ -1,13 +1,13 @@
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { notFound } from 'next/navigation'
 import { getBlogPosts } from 'datamain/loaders'
-import { getStrapiMedia } from '../../../../lib/utils'
+import { getStrapiMedia } from '../../../../../lib/utils'
 import { PostData, StrapiMeta } from 'lib/blog-types'
 
 const POSTS_PER_PAGE = 10
 
 export async function generateStaticParams() {
-  const { meta } = await getBlogPosts(1, '', '', 1)
+  const { meta } = await getBlogPosts(1, '', '', 1, 'en')
   const pageCount = meta?.pagination?.pageCount ?? 1
 
   return Array.from({ length: pageCount }, (_, i) => ({
@@ -16,13 +16,14 @@ export async function generateStaticParams() {
 }
 
 export default async function Page(props: {
-  params: { page: string }
+  params: { page: string; lang: string }
   searchParams: { query?: string; category?: string }
 }) {
   const { params, searchParams } = props
   const pageNumber = parseInt(params.page, 10)
   const query = searchParams.query || ''
   const category = searchParams.category || ''
+  const locale = params.lang
 
   if (isNaN(pageNumber) || pageNumber <= 0) {
     return notFound()
@@ -32,22 +33,19 @@ export default async function Page(props: {
     pageNumber,
     query,
     category,
-    POSTS_PER_PAGE
+    POSTS_PER_PAGE,
+    locale
   )) as unknown as { data: PostData[]; meta: StrapiMeta }
 
   if (!allStrapiPosts) {
     return notFound()
   }
 
-  const formattedPosts = allStrapiPosts.map((post) => formatPost(post))
-
-  const filteredPosts = category
-    ? formattedPosts.filter((post) => post.tags.includes(category))
-    : formattedPosts
+  const formattedPosts = allStrapiPosts.map((post) => formatPost(post, locale))
 
   const startIndex = POSTS_PER_PAGE * (pageNumber - 1)
   const endIndex = startIndex + POSTS_PER_PAGE
-  const initialDisplayPosts = filteredPosts.slice(startIndex, endIndex)
+  const initialDisplayPosts = formattedPosts.slice(startIndex, endIndex)
 
   const totalPages = meta?.pagination?.pageCount || 1
 
@@ -58,14 +56,15 @@ export default async function Page(props: {
 
   return (
     <ListLayout
-      posts={filteredPosts}
+      posts={formattedPosts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
+      locale={locale}
     />
   )
 }
 
-function formatPost(post) {
+function formatPost(post, locale: string) {
   return {
     id: post.id,
     title: post.title,
@@ -75,7 +74,7 @@ function formatPost(post) {
     draft: false,
     summary: post.description,
     slug: post.slug,
-    path: `blog/${post.slug}`,
+    path: `${locale}/blog/${post.slug}`,
     images: post.cover ? [getStrapiMedia(post.cover.url)] : [],
     authors: post.author ? [post.author.name] : [],
     type: 'Blog' as const,

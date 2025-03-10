@@ -22,7 +22,7 @@ export default function FeaturedBlogCard({ title, imageUrl, href }: FeaturedBlog
           <div className="flex flex-col gap-6 p-4 md:flex-row">
             {/* Content Side */}
             <div className="flex flex-1 flex-col justify-between">
-              <h2 className="font-justice text-3xl leading-[120%] text-white md:text-5xl md:leading-[100%]">
+              <h2 className="font-justice text-3xl leading-[120%] text-white uppercase md:text-5xl md:leading-[100%]">
                 {title}
               </h2>
 

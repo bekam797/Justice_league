@@ -15,6 +15,16 @@ export async function getGlobalPageData() {
   return landingPage
 }
 
+export async function getMenuItemData(locale: string) {
+  const menuItems = await sdk.single('menu-items').find({
+    fields: ['Label', 'Url', 'Order', 'Number_label'],
+    sort: ['Order:asc'],
+    populate: '*',
+    locale: locale,
+  })
+  return menuItems
+}
+
 export async function getLandingPage() {
   const landingPage = await sdk.single('landing-page').find({
     populate: {
@@ -109,14 +119,15 @@ export async function getPageBySlug(slug: string, status: string) {
   return page
 }
 
-export async function getCategories() {
+export async function getCategories(locale: string) {
   const categories = await sdk.collection('categories').find({
     fields: ['name', 'slug', 'description'],
+    locale: locale,
   })
   return categories
 }
 
-export async function getBlogPostBySlug(slug: string, status: string) {
+export async function getBlogPostBySlug(slug: string, locale: string) {
   try {
     const post = await sdk.collection('articles').find({
       populate: {
@@ -164,6 +175,7 @@ export async function getBlogPostBySlug(slug: string, status: string) {
           $eq: slug,
         },
       },
+      locale: locale,
     })
     return post
   } catch (error) {
@@ -171,7 +183,13 @@ export async function getBlogPostBySlug(slug: string, status: string) {
   }
 }
 
-export async function getBlogPosts(page = 1, query = '', category = '', pageSize = 10) {
+export async function getBlogPosts(
+  page = 1,
+  query = '',
+  category = '',
+  pageSize = 10,
+  locale: string
+) {
   try {
     const params = {
       populate: {
@@ -196,8 +214,9 @@ export async function getBlogPosts(page = 1, query = '', category = '', pageSize
               $or: [{ title: { $containsi: query } }, { description: { $containsi: query } }],
             }
           : {}),
-        ...(category ? { category: { slug: { $eq: category } } } : {}),
+        ...(category ? { category: { name: { $eq: category } } } : {}), // Changed this line
       },
+      locale: locale,
     }
 
     const posts = await sdk.collection('articles').find(params)

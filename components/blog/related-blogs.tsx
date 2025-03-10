@@ -18,14 +18,10 @@ interface BlogPost {
 interface RelatedBlogsProps {
   posts?: BlogPost[]
   title?: string
-  className?: string
+  locale?: string
 }
 
-export function RelatedBlogs({
-  posts,
-  title = 'MORE BLOGS LIKE THIS',
-  className,
-}: RelatedBlogsProps) {
+export function RelatedBlogs({ posts, title = 'MORE BLOGS LIKE THIS', locale }: RelatedBlogsProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel()
   const [options, setOptions] = useState<EmblaOptionsType>({
     slidesToScroll: 4,
@@ -104,10 +100,8 @@ export function RelatedBlogs({
     } else if (visibleSlides === 3) {
       return relativeIndex === 1 ? 1 : 0.5
     }
-    return 1 // For 2 or 1 visible slides, always return 1
+    return 1
   }
-
-  console.log(posts, 'postsssss')
 
   return (
     <div className="w-full bg-black">
@@ -150,7 +144,7 @@ export function RelatedBlogs({
                   opacity: getOpacity(index),
                 }}
               >
-                <Link href={`/blog/${post.slug}`} className="block">
+                <Link href={`/${locale}/blog/${post.slug}`} className="block">
                   <div className="overflow-hidden rounded-[8px] bg-white/10">
                     <div className="relative aspect-[4/3] w-full">
                       <Image

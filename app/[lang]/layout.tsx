@@ -1,7 +1,7 @@
 import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
-import '../css/fonts.css'
+import '../../css/fonts.css'
 
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
@@ -9,6 +9,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import { justice, helvetica } from '@/css/fonts'
+import { getAvailableLocales } from 'datamain/services/locales'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -50,12 +51,28 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: { lang: string }
+}) {
+  const { lang } = await params
   const basePath = process.env.BASE_PATH || ''
+
+  // Fetch locales at the layout level
+  let localesJson = '[]'
+  try {
+    const locales = await getAvailableLocales()
+    localesJson = JSON.stringify(locales)
+  } catch (error) {
+    console.error('Error fetching locales in layout:', error)
+  }
 
   return (
     <html
-      lang={siteMetadata.language}
+      lang={lang}
       className={`${justice.variable} ${helvetica.variable} dark scroll-smooth`}
       suppressHydrationWarning
     >
@@ -90,7 +107,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <main className="mb-auto">{children}</main>
+            <main className="mb-auto">
+              <script
+                id="language-selector-data"
+                type="application/json"
+                dangerouslySetInnerHTML={{ __html: localesJson }}
+              />
+              {children}
+            </main>
           </SearchProvider>
         </ThemeProviders>
       </body>

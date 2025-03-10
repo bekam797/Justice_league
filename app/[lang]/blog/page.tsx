@@ -1,29 +1,39 @@
-import { genPageMetadata } from 'app/seo'
+import { genPageMetadata } from 'app/[lang]/seo'
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { getBlogPosts } from 'datamain/loaders'
-import { getStrapiMedia } from '../../lib/utils'
+import { getStrapiMedia } from '../../../lib/utils'
 import { PostData, StrapiMeta } from 'lib/blog-types'
+import { Metadata } from 'next'
 
 const POSTS_PER_PAGE = 10
 
-export const metadata = genPageMetadata({ title: 'Blog' })
+interface Props {
+  params: { lang: string }
+  searchParams: { page?: string; query?: string; category?: string }
+}
 
-export default async function BlogPage(props: {
-  searchParams: Promise<{ page: string; query?: string; category?: string }>
-}) {
-  const searchParams = await props.searchParams
-  const pageNumber = parseInt(searchParams.page || '1', 10)
-  const query = searchParams.query || ''
-  const category = searchParams.category || ''
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params
+  return genPageMetadata({ title: `Blog - ${lang.toUpperCase()}` })
+}
+
+async function BlogPage({ params, searchParams }: Props) {
+  const { lang } = await params
+  const resolvedSearchParams = await searchParams
+
+  const pageNumber = parseInt(resolvedSearchParams.page || '1', 10)
+  const query = resolvedSearchParams.query || ''
+  const category = resolvedSearchParams.category || ''
 
   const { data: allStrapiPosts, meta } = (await getBlogPosts(
     pageNumber,
     query,
     category,
-    POSTS_PER_PAGE
+    POSTS_PER_PAGE,
+    lang
   )) as unknown as { data: PostData[]; meta: StrapiMeta }
 
-  const formattedPosts = allStrapiPosts.map((post) => formatPost(post))
+  const formattedPosts = allStrapiPosts.map((post) => formatPost(post, lang))
 
   const startIndex = (pageNumber - 1) * POSTS_PER_PAGE
   const endIndex = startIndex + POSTS_PER_PAGE
@@ -39,11 +49,12 @@ export default async function BlogPage(props: {
       posts={formattedPosts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
+      locale={lang}
     />
   )
 }
 
-function formatPost(post) {
+function formatPost(post, locale: string) {
   return {
     id: post.id,
     title: post.title,
@@ -53,7 +64,7 @@ function formatPost(post) {
     draft: false,
     summary: post.description,
     slug: post.slug,
-    path: `blog/${post.slug}`,
+    path: `${locale}/blog/${post.slug}`,
     images: post.cover ? [getStrapiMedia(post.cover.url)] : [],
     authors: post.author ? [post.author.name] : [],
     type: 'Blog' as const,
@@ -64,3 +75,4 @@ function formatPost(post) {
     featured: post.featured,
   }
 }
+export default BlogPage

@@ -1,10 +1,8 @@
 import { CoreContent } from 'pliny/utils/contentlayer'
 import type { Blog } from 'contentlayer/generated'
-import { BlogFilter } from '@/components/blog/blog-filter'
 import FeaturedBlogCard from '@/components/blog/featured-blog-card'
 import BlogGrid from '@/components/blog/blog-grid'
 import Pagination from '@/components/blog/pagination'
-import { motion } from 'framer-motion'
 import { CategorySelect } from '@/components/blog/category-select'
 
 type BlogWithFeatured = CoreContent<Blog> & { featured?: boolean }
@@ -17,12 +15,14 @@ interface ListLayoutProps {
   posts: BlogWithFeatured[]
   initialDisplayPosts?: BlogWithFeatured[]
   pagination?: PaginationProps
+  locale: string
 }
 
 export default function ListLayoutWithTags({
   posts,
   initialDisplayPosts = [],
   pagination,
+  locale,
 }: ListLayoutProps) {
   const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts
   const featuredPost = displayPosts.find((post) => post?.featured === true)
@@ -35,7 +35,7 @@ export default function ListLayoutWithTags({
   return (
     <div>
       <div className="pt-28">
-        <CategorySelect />
+        <CategorySelect locale={locale} />
         {isFirstPage && featuredPost && (
           <FeaturedBlogCard
             title={featuredPost.title}

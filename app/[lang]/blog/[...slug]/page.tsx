@@ -1,11 +1,9 @@
-import { components } from '@/components/MDXComponents'
 import { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import PostSimple from '@/layouts/PostSimple'
 import siteMetadata from '@/data/siteMetadata'
 import { getBlogPostBySlug, getBlogPosts } from 'datamain/loaders'
-import { getStrapiMedia } from '../../../lib/utils'
+import { getStrapiMedia } from '../../../../lib/utils'
 import { remark } from 'remark'
 import remarkHtml from 'remark-html'
 import remarkGfm from 'remark-gfm'
@@ -13,17 +11,22 @@ import { StrapiImage } from '@/components/StrapiImage'
 import { ImageSlider } from '@/components/blog/image-slider'
 import { AuthorHeader } from '@/components/blog/author-header'
 import { RelatedBlogs } from '@/components/blog/related-blogs'
+import { PostData } from 'lib/blog-types'
 
 interface PageProps {
-  params: { slug: string[] }
+  params: {
+    slug: string[]
+    lang: string // Add lang parameter
+  }
 }
 
 export async function generateMetadata(props: PageProps): Promise<Metadata | undefined> {
   try {
     const params = await props.params
     const slug = decodeURI(params.slug.join('/'))
+    const locale = params.lang
 
-    const post = await getBlogPostBySlug(slug, 'published')
+    const post = await getBlogPostBySlug(slug, locale)
     if (!post?.data?.[0]) return
 
     const postData = post.data[0]
@@ -73,8 +76,9 @@ export default async function Page(props: PageProps) {
   try {
     const params = await props.params
     const slug = decodeURI(params.slug.join('/'))
+    const locale = params.lang
 
-    const post = await getBlogPostBySlug(slug, 'published')
+    const post = await getBlogPostBySlug(slug, locale)
     if (!post?.data?.[0]) return notFound()
 
     const postData = post.data[0]
@@ -88,8 +92,8 @@ export default async function Page(props: PageProps) {
       authors: [postData.author?.name || 'Anonymous'],
       layout: 'PostLayout',
       slug: postData.slug,
-      path: `blog/${postData.slug}`,
-      filePath: `blog/${postData.slug}`,
+      path: `${locale}/blog/${postData.slug}`,
+      filePath: `${locale}/blog/${postData.slug}`,
       readingTime: { text: '5 min', minutes: 5, time: 300000, words: 1000 },
       type: 'Blog' as const,
       toc: [],
@@ -97,10 +101,10 @@ export default async function Page(props: PageProps) {
     }
 
     // Fetch all posts instead of category-filtered ones
-    const relatedPosts = await getBlogPosts(1, '', '', 20) // Fetch more to have enough after filtering
+    const relatedPosts = await getBlogPosts(1, '', '', 20, locale)
     const filteredPosts = relatedPosts.data
-      .filter((post) => post?.id !== postData.id) // Exclude current post
-      .slice(0, 10) // Take first 10 posts
+      .filter((post: PostData) => post?.id !== postData.id) // Add PostData type here
+      .slice(0, 10)
       .map((post) => ({
         id: post.id,
         title: post.title,
@@ -191,7 +195,7 @@ export default async function Page(props: PageProps) {
             />
           )}
         </PostSimple>
-        {filteredPosts.length > 0 && <RelatedBlogs posts={filteredPosts} />}
+        {filteredPosts.length > 0 && <RelatedBlogs posts={filteredPosts} locale={locale} />}
       </>
     )
   } catch (error) {

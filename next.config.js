@@ -4,7 +4,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
-const { i18n } = require('./next-i18next.config')
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
   default-src 'self';
@@ -56,8 +55,22 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
-  i18n,
   reactStrictMode: true,
+  images: {
+    domains: [
+      'localhost',
+      'https://justice-league-vyjjd.ondigitalocean.app',
+      'justice-league-vyjjd.ondigitalocean.app',
+    ],
+  },
+  i18n: {
+    // List all your supported locales
+    locales: ['en', 'ka', 'ru'],
+    // Default locale that doesn't show in the URL
+    defaultLocale: 'en',
+    // Disable automatic locale detection if you want to control it yourself
+    localeDetection: true,
+  },
 }
 
 const output = process.env.EXPORT ? 'export' : undefined
@@ -87,6 +100,11 @@ module.exports = () => {
           protocol: 'http',
           hostname: 'localhost',
           port: '1337',
+          pathname: '/uploads/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'justice-league-vyjjd.ondigitalocean.app',
           pathname: '/uploads/**',
         },
       ],

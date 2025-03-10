@@ -176,3 +176,13 @@ input:-webkit-autofill:focus {
   display: flex;
   gap: 0;
 }
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
