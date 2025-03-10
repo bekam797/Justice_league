@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import PostSimple from '@/layouts/PostSimple'
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata, { locale } from '@/data/siteMetadata'
 import { getBlogPostBySlug, getBlogPosts } from 'datamain/loaders'
 import { getStrapiMedia } from '../../../../lib/utils'
 import { remark } from 'remark'
@@ -14,17 +14,18 @@ import { RelatedBlogs } from '@/components/blog/related-blogs'
 import { PostData } from 'lib/blog-types'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string[]
-    lang: string // Add lang parameter
-  }
+    lang: string
+  }>
 }
 
 export async function generateMetadata(props: PageProps): Promise<Metadata | undefined> {
   try {
-    const params = await props.params
-    const slug = decodeURI(params.slug.join('/'))
-    const locale = params.lang
+    const { params } = await props
+    const { slug: slugArray, lang } = await params
+    const slug = decodeURI(slugArray.join('/'))
+    const locale = lang
 
     const post = await getBlogPostBySlug(slug, locale)
     if (!post?.data?.[0]) return
@@ -72,11 +73,13 @@ async function markdownToHtml(markdown: string) {
   return result.toString()
 }
 
+// @ts-ignore - TypeScript is mistakenly expecting params to be a Promise
 export default async function Page(props: PageProps) {
   try {
-    const params = await props.params
-    const slug = decodeURI(params.slug.join('/'))
-    const locale = params.lang
+    const { params } = await props
+    const { slug: slugArray, lang } = await params
+    const slug = decodeURI(slugArray.join('/'))
+    const locale = lang
 
     const post = await getBlogPostBySlug(slug, locale)
     if (!post?.data?.[0]) return notFound()

@@ -2,8 +2,14 @@ import { getMenuItemData } from 'datamain/loaders'
 import MenuContent from '@/components/landing/menu-content'
 import { LandingLanguageSelector } from '@/components/landing/LandingLanguageSelector'
 
-export default async function Home({ params }: { params: { lang: string } }) {
-  const { lang } = await params
+interface Props {
+  params: Promise<{
+    lang: string
+  }>
+}
+
+export default async function Home(props: Props) {
+  const { lang } = await props.params
   const response = await getMenuItemData(lang)
 
   // Make sure we have an array of menu items

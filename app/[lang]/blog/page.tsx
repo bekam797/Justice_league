@@ -8,8 +8,10 @@ import { Metadata } from 'next'
 const POSTS_PER_PAGE = 10
 
 interface Props {
-  params: { lang: string }
-  searchParams: { page?: string; query?: string; category?: string }
+  params: Promise<{
+    lang: string
+  }>
+  searchParams: Promise<{ page?: string; query?: string; category?: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

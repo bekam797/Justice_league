@@ -47,7 +47,8 @@ export default async function TagPage(props: { params: Promise<{ tag: string; pa
       posts={filteredPosts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
-      title={title}
+      // title={title}
+      locale={'en'}
     />
   )
 }

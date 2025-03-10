@@ -4,6 +4,14 @@ import { getBlogPosts } from 'datamain/loaders'
 import { getStrapiMedia } from '../../../../../lib/utils'
 import { PostData, StrapiMeta } from 'lib/blog-types'
 
+interface Props {
+  params: Promise<{
+    lang: string
+    page: string
+  }>
+  searchParams: Promise<{ page?: string; query?: string; category?: string }>
+}
+
 const POSTS_PER_PAGE = 10
 
 export async function generateStaticParams() {
@@ -15,15 +23,15 @@ export async function generateStaticParams() {
   }))
 }
 
-export default async function Page(props: {
-  params: { page: string; lang: string }
-  searchParams: { query?: string; category?: string }
-}) {
-  const { params, searchParams } = props
-  const pageNumber = parseInt(params.page, 10)
-  const query = searchParams.query || ''
-  const category = searchParams.category || ''
-  const locale = params.lang
+export default async function Page(props: Props) {
+  const { params, searchParams } = await props
+  const { page, lang } = await params
+  const resolvedSearchParams = await searchParams
+
+  const pageNumber = parseInt(page, 10)
+  const query = resolvedSearchParams.query || ''
+  const category = resolvedSearchParams.category || ''
+  const locale = lang
 
   if (isNaN(pageNumber) || pageNumber <= 0) {
     return notFound()

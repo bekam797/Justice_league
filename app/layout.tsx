@@ -11,6 +11,13 @@ import { Metadata } from 'next'
 import { justice, helvetica } from '@/css/fonts'
 import { getAvailableLocales } from 'datamain/services/locales'
 
+interface LayoutProps {
+  params: Promise<{
+    lang: string
+  }>
+  children: React.ReactNode
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   title: {
@@ -51,14 +58,8 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: { lang: string }
-}) {
-  const { lang } = await params
+export default async function RootLayout(props: LayoutProps) {
+  const { lang } = await props.params
   const basePath = process.env.BASE_PATH || ''
 
   // Fetch locales at the layout level
@@ -113,7 +114,7 @@ export default async function RootLayout({
                 type="application/json"
                 dangerouslySetInnerHTML={{ __html: localesJson }}
               />
-              {children}
+              {props.children}
             </main>
           </SearchProvider>
         </ThemeProviders>

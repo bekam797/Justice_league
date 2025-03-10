@@ -74,7 +74,11 @@ export function ImageSlider({ images = [], className, showCaption = true }: Exac
     if (!emblaApi) return
     onSelect()
     emblaApi.on('select', onSelect)
-    return () => emblaApi.off('select', onSelect)
+
+    // Return a function that just calls off() without returning anything
+    return () => {
+      emblaApi.off('select', onSelect)
+    }
   }, [emblaApi, onSelect])
 
   if (!images || images.length === 0) {

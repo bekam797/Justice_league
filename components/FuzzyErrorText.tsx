@@ -161,7 +161,7 @@ const FuzzyErrorText = ({
           canvas.removeEventListener('touchend', handleTouchEnd)
         }
       }
-
+      // @ts-ignore
       canvas.cleanupFuzzyText = cleanup
     }
 
@@ -170,7 +170,9 @@ const FuzzyErrorText = ({
     return () => {
       isCancelled = true
       window.cancelAnimationFrame(animationFrameId)
+      // @ts-ignore
       if (canvas && canvas.cleanupFuzzyText) {
+        // @ts-ignore
         canvas.cleanupFuzzyText()
       }
     }
