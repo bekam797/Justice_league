@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react'
-import { getAvailableLocales } from 'datamain/services/locales'
+// lib/useLocales.ts
+'use client'
 
-interface StrapiLocale {
-  code: string
-  name: string
-}
+import { useState, useEffect } from 'react'
+import { getAvailableLocales, StrapiLocale } from 'datamain/services/locales' // Import StrapiLocale
 
 export function useLocales() {
   const [locales, setLocales] = useState<StrapiLocale[]>([])
@@ -15,7 +13,12 @@ export function useLocales() {
     async function fetchLocales() {
       try {
         const availableLocales = await getAvailableLocales()
-        setLocales(availableLocales)
+        if (availableLocales && Array.isArray(availableLocales)) {
+          setLocales(availableLocales)
+        } else {
+          console.warn('No locales fetched or invalid locale data.')
+          setError(new Error('Failed to load locales'))
+        }
       } catch (err) {
         setError(err as Error)
       } finally {
