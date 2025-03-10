@@ -14,7 +14,6 @@ interface Locale {
 export function LandingLanguageSelector() {
   const router = useRouter()
   const pathname = usePathname()
-  const [mounted, setMounted] = useState(false)
   const { locales, isLoading } = useLocales()
 
   // Format locales for our component with type assertion
@@ -29,11 +28,7 @@ export function LandingLanguageSelector() {
   const currentLocale =
     pathSegments[0] === 'ka' || pathSegments[0] === 'ru' ? pathSegments[0] : 'en'
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted || isLoading || languages.length === 0) {
+  if (isLoading || languages.length === 0) {
     // Return an empty placeholder with the same dimensions to prevent layout shift
     return (
       <motion.div
@@ -66,6 +61,7 @@ export function LandingLanguageSelector() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1, delay: 1 }}
       className="fixed bottom-8 space-x-4"
+      suppressHydrationWarning
     >
       {languages.map((lang, index) => (
         <React.Fragment key={lang.code}>

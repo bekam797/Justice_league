@@ -14,7 +14,6 @@ interface Locale {
 export function LanguageSelector() {
   const router = useRouter()
   const pathname = usePathname()
-  const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { locales, isLoading } = useLocales()
@@ -35,8 +34,6 @@ export function LanguageSelector() {
   const selectedLanguage = languages.find((lang) => lang.code === currentLocale)?.display || 'EN'
 
   useEffect(() => {
-    setMounted(true)
-
     // Close dropdown when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -47,8 +44,6 @@ export function LanguageSelector() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  if (!mounted) return null
 
   const handleLanguageChange = (lang: { code: string; display: string; name: string }) => {
     // Get the path without the locale prefix
@@ -82,7 +77,7 @@ export function LanguageSelector() {
   }
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef} suppressHydrationWarning>
       <button
         className="group flex h-[64px] w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6"
         onClick={() => setIsOpen(!isOpen)}
