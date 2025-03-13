@@ -51,7 +51,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   if (pathname === '/') return <>{children}</>
 
   return (
-    <div className="relative overflow-hidden">
+    <div>
       <AnimatePresence mode="popLayout">
         {showContent && (
           <motion.div

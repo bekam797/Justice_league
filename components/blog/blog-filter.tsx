@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import SectionBadge from '../common/SectionBadge'
 interface BlogFilterProps {
   title: string
   filters: string[]
@@ -16,10 +16,7 @@ export function BlogFilter({ title, filters, onFilterChange }: BlogFilterProps) 
 
   return (
     <div className="flex flex-col gap-4 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center">
-        <div className="blink_me mr-3 h-1.5 w-1.5 rounded-full bg-[#006837]"></div>
-        <div className="font-helvetica text-base tracking-wider text-white uppercase">{title}</div>
-      </div>
+      <SectionBadge title={title} />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <span className="font-helvetica text-base tracking-wider text-white uppercase">
           Filter By:

@@ -61,6 +61,7 @@ const nextConfig = {
       'localhost',
       'https://justice-league-vyjjd.ondigitalocean.app',
       'justice-league-vyjjd.ondigitalocean.app',
+      'cdn.builder.io',
     ],
   },
   i18n: {
@@ -95,6 +96,10 @@ module.exports = () => {
         {
           protocol: 'https',
           hostname: 'picsum.photos',
+        },
+        {
+          protocol: 'https',
+          hostname: 'cdn.builder.io',
         },
         {
           protocol: 'http',

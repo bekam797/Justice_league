@@ -1,4 +1,5 @@
 import CategoryButton from '@/components/blog/category-button'
+import SectionBadge from '@/components/common/SectionBadge'
 import { getCategories } from 'datamain/loaders'
 
 interface CategorySelectProps {
@@ -12,10 +13,7 @@ export const CategorySelect = async ({ locale }: CategorySelectProps) => {
 
   return (
     <div className="flex flex-col gap-4 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center">
-        <div className="blink_me mr-3 h-1.5 w-1.5 rounded-full bg-[#006837]"></div>
-        <div className="font-helvetica text-base tracking-wider text-white uppercase">Blog</div>
-      </div>
+      <SectionBadge title="Blog" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <span className="font-helvetica text-base tracking-wider text-white uppercase">
           Filter By:
