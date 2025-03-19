@@ -16,6 +16,7 @@ interface LayoutProps {
     lang: string
   }>
   children: React.ReactNode
+  modal: React.ReactNode
 }
 
 export const metadata: Metadata = {
@@ -71,6 +72,8 @@ export default async function RootLayout(props: LayoutProps) {
     console.error('Error fetching locales in layout:', error)
   }
 
+  console.log('Modal:', props.modal)
+
   return (
     <html
       lang={lang}
@@ -116,6 +119,8 @@ export default async function RootLayout(props: LayoutProps) {
               />
               {props.children}
             </main>
+            {props.modal}
+            <div id="modal-root" />
           </SearchProvider>
         </ThemeProviders>
       </body>

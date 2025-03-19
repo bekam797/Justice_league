@@ -60,7 +60,7 @@ export function LandingLanguageSelector() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1, delay: 1 }}
-      className="fixed bottom-8 space-x-4"
+      className="fixed bottom-2 z-20 space-x-4 sm:bottom-4 md:bottom-6"
       suppressHydrationWarning
     >
       {languages.map((lang, index) => (

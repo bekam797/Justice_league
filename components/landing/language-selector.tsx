@@ -15,6 +15,7 @@ export function LanguageSelector() {
   const router = useRouter()
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { locales, isLoading } = useLocales()
 
@@ -67,7 +68,7 @@ export function LanguageSelector() {
     return (
       <div className="relative">
         <button
-          className="group flex h-[64px] w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6"
+          className="group flex h-14 w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6 lg:h-[64px]"
           disabled
         >
           <span className="font-justice text-base text-white opacity-50">EN</span>
@@ -79,10 +80,31 @@ export function LanguageSelector() {
   return (
     <div className="relative" ref={dropdownRef} suppressHydrationWarning>
       <button
-        className="group flex h-[64px] w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6"
+        className="group flex h-14 w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6 lg:h-[64px]"
         onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <span className="font-justice text-base text-white">{selectedLanguage}</span>
+        {/* Perspective Text Effect */}
+        <div className="font-justice relative text-base">
+          <div
+            className="text-white uppercase transition-all duration-[0.75s]"
+            style={{
+              opacity: isHovered ? 0 : 1,
+              transform: isHovered ? 'translateY(-100%)' : 'translateY(0)',
+            }}
+          >
+            {selectedLanguage}
+          </div>
+          <div
+            className="absolute top-0 left-0 text-white uppercase transition-all duration-[0.75s]"
+            style={{
+              opacity: isHovered ? 1 : 0,
+            }}
+          >
+            {selectedLanguage}
+          </div>
+        </div>
         <ChevronRight />
       </button>
 

@@ -29,15 +29,19 @@ export default function ClientsEntrance() {
             delay: 0.2,
           }}
           style={{ opacity: svgOpacity }}
+          className="w-full"
         >
           <ClientsLogoTop className="h-auto w-full text-white" />
         </motion.div>
 
         <motion.div
           style={{ height: gap }}
-          className="flex w-full items-center justify-center overflow-hidden"
+          className="flex w-full items-center justify-center overflow-visible md:h-auto md:overflow-hidden"
         >
-          <motion.div className="flex h-full w-full items-center justify-center px-4">
+          <motion.div
+            className="flex h-full w-full items-center justify-center px-1 md:px-4"
+            style={{ height: '350px' }}
+          >
             {/* Pass the scrollYProgress to the ImageGallery */}
             <ImageGallery galleryId={1} scrollYProgress={scrollYProgress} />
           </motion.div>
@@ -51,7 +55,7 @@ export default function ClientsEntrance() {
             ease: [0.25, 0.1, 0.25, 1],
             delay: 0.4,
           }}
-          className="mt-[-1px]"
+          className="mt-[-1px] w-full"
           style={{ opacity: svgOpacity }}
         >
           <ClientsLogoBottom className="h-auto w-full text-white" />
