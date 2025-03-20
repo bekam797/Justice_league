@@ -1,4 +1,4 @@
-import { genPageMetadata } from 'app/[lang]/seo'
+import { genPageMetadata } from 'app/seo'
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { getBlogPosts } from 'datamain/loaders'
 import { getStrapiMedia } from '../../../lib/utils'
