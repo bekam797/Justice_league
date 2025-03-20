@@ -27,7 +27,7 @@ export function MenuItem({
 
   return (
     <motion.div onHoverStart={() => setHoveredItem(id)} onHoverEnd={() => setHoveredItem(null)}>
-      <LocalizedLink href={Url} className="block bg-[#3c380d]">
+      <LocalizedLink href={Url} className="block bg-[#061A31]">
         <motion.div
           className="relative flex w-full items-center overflow-hidden"
           animate={{

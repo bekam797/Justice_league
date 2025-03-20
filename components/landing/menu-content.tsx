@@ -47,17 +47,22 @@ export default function MenuContent({ menuItems }) {
   // Ensure menuItems is an array before mapping
   const menuItemsArray = Array.isArray(menuItems) ? menuItems : []
 
+  // Define consistent max width for logos and menu
+  const logoMaxWidth = '613px'
+  const logoInitialMaxWidth = '306px'
+  const menuMaxWidth = '618px'
+
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 flex flex-col items-center justify-center p-3 pb-16 lg:p-0 lg:pb-16">
       {/* JUSTICE Logo */}
       <motion.div
         className="flex w-full justify-center"
         style={{
-          maxWidth: showMenu ? 'clamp(200px, 40vw, 613px)' : 'clamp(150px, 20vw, 306px)',
+          maxWidth: showMenu ? logoMaxWidth : logoInitialMaxWidth,
         }}
         animate={{
           y: showMenu ? -8 : 0,
-          maxWidth: showMenu ? 'clamp(200px, 40vw, 613px)' : 'clamp(150px, 20vw, 306px)',
+          maxWidth: showMenu ? logoMaxWidth : logoInitialMaxWidth,
         }}
         transition={transition}
       >
@@ -66,7 +71,11 @@ export default function MenuContent({ menuItems }) {
 
       {/* Menu Container */}
       <motion.div
-        className="relative w-full max-w-[618px] overflow-hidden"
+        className="relative w-full overflow-auto"
+        style={{
+          maxWidth: menuMaxWidth,
+          maxHeight: 'calc(100vh - 200px)',
+        }}
         initial={{ height: 0 }}
         animate={{ height: showMenu ? 'auto' : 0 }}
         transition={transition}
@@ -92,13 +101,13 @@ export default function MenuContent({ menuItems }) {
 
       {/* LEAGUE Logo */}
       <motion.div
-        className="flex w-full justify-center"
+        className="mt-2 flex w-full justify-center"
         style={{
-          maxWidth: showMenu ? 'clamp(200px, 40vw, 613px)' : 'clamp(150px, 20vw, 306px)',
+          maxWidth: showMenu ? logoMaxWidth : logoInitialMaxWidth,
         }}
         animate={{
           y: showMenu ? 8 : 0,
-          maxWidth: showMenu ? 'clamp(200px, 40vw, 613px)' : 'clamp(150px, 20vw, 306px)',
+          maxWidth: showMenu ? logoMaxWidth : logoInitialMaxWidth,
         }}
         transition={transition}
       >

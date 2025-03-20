@@ -229,3 +229,64 @@ export async function getBlogPosts(
     return { data: [], meta: { pagination: { pageCount: 0 } } }
   }
 }
+
+interface TeamResponse {
+  data: {
+    id: number
+    title: string
+    description: string
+    team_members: Array<{
+      id: number
+      name: string
+      position: string
+      imageUrl: {
+        url: string
+      }
+      description: Array<{
+        children: Array<{
+          text: string
+        }>
+      }>
+    }>
+    socialLinks: {
+      linkedin?: string
+      twitter?: string
+      email?: string
+    }
+  }
+}
+
+export async function getTeam(locale: string): Promise<TeamResponse> {
+  try {
+    const params = {
+      populate: {
+        team_members: {
+          populate: {
+            imageUrl: {
+              fields: ['url', 'alternativeText', 'name'],
+            },
+            socialLinks: {
+              fields: ['linkedin', 'twitter', 'email'],
+            },
+          },
+        },
+        team_seo: {
+          populate: {
+            shareImage: {
+              fields: ['url', 'alternativeText', 'name'],
+            },
+          },
+        },
+      },
+      locale,
+    }
+
+    const team = await sdk.collection('team').find(params)
+    return team as unknown as TeamResponse
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response.data)
+    }
+    return { data: { id: 0, title: '', description: '', team_members: [], socialLinks: {} } }
+  }
+}

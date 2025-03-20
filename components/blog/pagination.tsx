@@ -48,7 +48,7 @@ export default function Pagination({ totalPages, currentPage, basePath }: Pagina
       {/* First page */}
       <Link
         href={`/${basePath}`}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#3c380d]"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#061A31]"
       >
         <DoubleArrowLeft />
         <span className="sr-only">First page</span>
@@ -66,7 +66,7 @@ export default function Pagination({ totalPages, currentPage, basePath }: Pagina
       ) : (
         <Link
           href={currentPage - 1 === 1 ? `/${basePath}` : `/${basePath}/page/${currentPage - 1}`}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#3c380d]"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#061A31]"
         >
           <PrevArrow />
           <span className="sr-only">Previous page</span>
@@ -94,7 +94,7 @@ export default function Pagination({ totalPages, currentPage, basePath }: Pagina
             href={page === 1 ? `/${basePath}` : `/${basePath}/page/${page}`}
             className={cn(
               'font-helvetica flex h-10 w-10 items-center justify-center rounded-full text-sm text-white transition-colors',
-              isCurrentPage ? 'bg-[#3c380d]' : 'bg-white/10 hover:bg-[#3c380d]'
+              isCurrentPage ? 'bg-[#061A31]' : 'bg-white/10 hover:bg-[#061A31]'
             )}
             aria-current={isCurrentPage ? 'page' : undefined}
           >
@@ -115,7 +115,7 @@ export default function Pagination({ totalPages, currentPage, basePath }: Pagina
       ) : (
         <Link
           href={`/${basePath}/page/${currentPage + 1}`}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#3c380d]"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#061A31]"
         >
           <NextArrow />
           <span className="sr-only">Next page</span>
@@ -125,7 +125,7 @@ export default function Pagination({ totalPages, currentPage, basePath }: Pagina
       {/* Last page */}
       <Link
         href={`/${basePath}/page/${totalPages}`}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#3c380d]"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#061A31]"
       >
         <DoubleArrowRight />
         <span className="sr-only">Last page</span>

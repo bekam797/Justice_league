@@ -67,7 +67,7 @@ export function LanguageSelector() {
     return (
       <div className="relative">
         <button
-          className="group flex h-[64px] w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6"
+          className="group flex h-14 w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6 lg:h-[64px]"
           disabled
         >
           <span className="font-justice text-base text-white opacity-50">EN</span>
@@ -79,10 +79,15 @@ export function LanguageSelector() {
   return (
     <div className="relative" ref={dropdownRef} suppressHydrationWarning>
       <button
-        className="group flex h-[64px] w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6"
+        className="group flex h-14 w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6 lg:h-[64px]"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="font-justice text-base text-white">{selectedLanguage}</span>
+        {/* Perspective Text Effect */}
+        <div className="font-justice relative text-base">
+          <div className="text-white uppercase transition-all duration-[0.75s] hover:opacity-70">
+            {selectedLanguage}
+          </div>
+        </div>
         <ChevronRight />
       </button>
 
@@ -96,7 +101,9 @@ export function LanguageSelector() {
         {languages.map((lang) => (
           <button
             key={lang.code}
-            className="font-justice w-full cursor-pointer px-6 py-2 text-left text-white hover:bg-[#333333]"
+            className={`font-justice w-full cursor-pointer px-6 py-2 text-left hover:text-white ${
+              lang.code === currentLocale ? 'text-white' : 'text-white/60'
+            }`}
             onClick={() => handleLanguageChange(lang)}
             title={lang.name}
           >

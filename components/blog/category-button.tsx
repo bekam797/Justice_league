@@ -53,7 +53,7 @@ export default function CategoryButton({
       type="button"
       onClick={() => handleSelect(value)}
       className={`cursor-pointer rounded-full p-4 py-2.5 text-sm whitespace-nowrap transition-colors ${
-        isActive ? 'bg-[#3D3801] text-white' : 'bg-white/7 text-white hover:bg-white/5'
+        isActive ? 'bg-[#061A31] text-white' : 'bg-white/7 text-white hover:bg-white/5'
       }`}
     >
       {children}

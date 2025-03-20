@@ -28,7 +28,7 @@ export function BlogFilter({ title, filters, onFilterChange }: BlogFilterProps) 
               onClick={() => handleFilterChange(filter)}
               className={`cursor-pointer rounded-full p-4 py-2.5 text-sm whitespace-nowrap transition-colors ${
                 activeFilter === filter
-                  ? 'bg-[#3D3801] text-white'
+                  ? 'bg-[#061A31] text-white'
                   : 'bg-white/7 text-white hover:bg-white/5'
               }`}
             >

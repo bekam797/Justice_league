@@ -31,7 +31,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!mounted) return
 
-    if (pathname === '/') {
+    // Skip animation for home page and modal routes
+    if (pathname === '/' || pathname.includes('/team/')) {
       setIsLoading(false)
       setShowContent(true)
       return
@@ -48,7 +49,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer)
   }, [pathname, mounted])
 
-  if (pathname === '/') return <>{children}</>
+  // Skip template for home page and modal routes
+  if (pathname === '/' || pathname.includes('/team/')) return <>{children}</>
 
   return (
     <div>
@@ -72,6 +74,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       <AnimatePresence mode="wait">
         {isLoading && (
           <motion.div
+            key="loader"
             initial={{ y: '100%' }}
             animate={{ y: '0%' }}
             exit={{ y: '-100%' }}
