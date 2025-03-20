@@ -17,6 +17,7 @@ export async function getAvailableLocales(): Promise<StrapiLocale[]> {
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: 5000,
     })
 
     if (response.status !== 200) {
@@ -30,7 +31,16 @@ export async function getAvailableLocales(): Promise<StrapiLocale[]> {
 
     return response.data
   } catch (error) {
-    console.error('Error fetching locales:', error)
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error fetching locales:', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        url: error.config?.url,
+      })
+    } else {
+      console.error('Unexpected error fetching locales:', error)
+    }
     return []
   }
 }

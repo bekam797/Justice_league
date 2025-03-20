@@ -72,8 +72,6 @@ export default async function GlobalLayout(props: LayoutProps) {
     console.error('Error fetching locales in layout:', error)
   }
 
-  console.log('Modal:', props.modal)
-
   return (
     <html
       lang={lang}
