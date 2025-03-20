@@ -16,7 +16,7 @@ export default function SectionTitle({ title = 'Default Title' }: SectionTitlePr
           transition={{ duration: 0.5, delay: 0.2 }}
           className="font-justice w-full max-w-[81.7vw] text-[48px] leading-[1.2] font-normal text-white uppercase sm:text-[3.75vw] sm:leading-[1.2] md:text-[4.5vw] lg:text-[5.25vw] xl:text-[6vw] 2xl:text-[6.25vw]"
         >
-          <span className="bg-[#3d3801] box-decoration-clone px-[1.25vw] py-[0.5vw] pl-0">
+          <span className="bg-[#061A31] box-decoration-clone px-[1.25vw] py-[0.5vw] pl-0">
             {title}
           </span>
         </motion.h1>

@@ -18,7 +18,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ imageUrl, name, positio
       onClick={onClick}
       aria-label={`View details for ${name}, ${position}`}
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-white max-sm:aspect-[4/5]">
+      <div className="relative aspect-[3/4] overflow-hidden rounded bg-white max-sm:aspect-[4/5]">
         <motion.div
           className="h-full w-full"
           whileHover={{ scale: 1.05 }}
@@ -37,10 +37,10 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ imageUrl, name, positio
           />
         </motion.div>
         <footer className="absolute bottom-4 left-4">
-          <h3 className="font-justice bg-[#3d3801] box-decoration-clone px-2 py-2 pr-0 pb-1 text-lg text-white uppercase sm:text-2xl">
+          <h3 className="font-justice bg-[#061A31] box-decoration-clone px-2 pr-0 pb-1 text-lg text-white uppercase sm:text-2xl">
             {name}
           </h3>
-          <p className="font-helvetica mt-[-12px] w-fit bg-[#3d3801] box-decoration-clone px-2 py-1 text-xs leading-4 font-light text-white/50 sm:text-sm md:text-base">
+          <p className="font-helvetica mt-[-12px] w-fit bg-[#061A31] box-decoration-clone px-2 py-1 text-xs leading-4 font-light text-white/50 sm:text-sm md:text-base">
             {position}
           </p>
         </footer>

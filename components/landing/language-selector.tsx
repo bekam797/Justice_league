@@ -15,7 +15,6 @@ export function LanguageSelector() {
   const router = useRouter()
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { locales, isLoading } = useLocales()
 
@@ -82,26 +81,10 @@ export function LanguageSelector() {
       <button
         className="group flex h-14 w-full cursor-pointer items-center justify-between gap-2 rounded-[8px] bg-[#1A1A1A] pr-4 pl-6 lg:h-[64px]"
         onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Perspective Text Effect */}
         <div className="font-justice relative text-base">
-          <div
-            className="text-white uppercase transition-all duration-[0.75s]"
-            style={{
-              opacity: isHovered ? 0 : 1,
-              transform: isHovered ? 'translateY(-100%)' : 'translateY(0)',
-            }}
-          >
-            {selectedLanguage}
-          </div>
-          <div
-            className="absolute top-0 left-0 text-white uppercase transition-all duration-[0.75s]"
-            style={{
-              opacity: isHovered ? 1 : 0,
-            }}
-          >
+          <div className="text-white uppercase transition-all duration-[0.75s] hover:opacity-70">
             {selectedLanguage}
           </div>
         </div>
@@ -118,7 +101,9 @@ export function LanguageSelector() {
         {languages.map((lang) => (
           <button
             key={lang.code}
-            className="font-justice w-full cursor-pointer px-6 py-2 text-left text-white hover:bg-[#333333]"
+            className={`font-justice w-full cursor-pointer px-6 py-2 text-left hover:text-white ${
+              lang.code === currentLocale ? 'text-white' : 'text-white/60'
+            }`}
             onClick={() => handleLanguageChange(lang)}
             title={lang.name}
           >

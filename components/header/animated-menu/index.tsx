@@ -110,7 +110,6 @@ const footerLinks = [
 
 export default function AnimatedMenu() {
   const [isActive, setIsActive] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
@@ -197,7 +196,7 @@ export default function AnimatedMenu() {
       {/* Menu Container */}
       <motion.div
         ref={menuRef}
-        className="relative z-20 overflow-hidden rounded-lg bg-[#3c380d]"
+        className="relative z-20 overflow-hidden rounded-lg bg-[#1a1a1a]"
         variants={menuVariants}
         animate={isActive ? 'open' : 'closed'}
         initial="closed"
@@ -276,35 +275,19 @@ export default function AnimatedMenu() {
 
           {/* Menu Button with SUPER SIMPLE Hover Effect */}
           <button
-            className="z-30 flex h-14 cursor-pointer items-center justify-between gap-2 rounded-[8px] border-none bg-[#3c380d] px-4 lg:h-[64px] lg:px-6"
+            className="z-30 flex h-14 cursor-pointer items-center justify-between gap-2 rounded-[8px] border-none bg-[#1a1a1a] px-4 lg:h-[64px] lg:px-6"
             onClick={toggleMenu}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 toggleMenu()
               }
             }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             aria-expanded={isActive}
             aria-label={isActive ? 'Close menu' : 'Open menu'}
           >
             {/* Text with Simple Hover Effect */}
-            <div className="font-justice relative text-base">
-              <div
-                className="text-white uppercase transition-all duration-[0.75s]"
-                style={{
-                  opacity: isHovered ? 0 : 1,
-                  transform: isHovered ? 'translateY(-100%)' : 'translateY(0)',
-                }}
-              >
-                {isActive ? 'Close' : 'Menu'}
-              </div>
-              <div
-                className="absolute top-0 left-0 text-white uppercase transition-all duration-[0.75s]"
-                style={{
-                  opacity: isHovered ? 1 : 0,
-                }}
-              >
+            <div className="font-justice text-base">
+              <div className="text-white uppercase transition-opacity duration-300 hover:opacity-70">
                 {isActive ? 'Close' : 'Menu'}
               </div>
             </div>

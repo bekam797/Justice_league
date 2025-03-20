@@ -58,7 +58,7 @@ export default function HeroWithAnimation({
       </motion.div>
 
       <motion.div style={{ y: contentY }} className="relative z-10 w-full px-3 lg:px-6">
-        <div className="mx-auto max-w-[1715px]">
+        <div className="">
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

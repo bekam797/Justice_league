@@ -1,22 +1,35 @@
 'use client'
 
 import type React from 'react'
-import { motion, useScroll, useTransform, frame, cancelFrame } from 'framer-motion'
+import {
+  motion,
+  useScroll,
+  useTransform,
+  frame,
+  cancelFrame,
+  MotionValue,
+  useMotionValue,
+} from 'framer-motion'
 import { ReactLenis } from 'lenis/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import throttle from 'lodash/throttle'
 import TeamMemberCard from './TeamMemberCard'
 import TeamMemberModal from './TeamMemberModal'
 import { TeamMember } from './types'
 import { fetchTeamMembers } from './TeamMembersData'
+import TeamTextAnimation from '@/components/team/TeamTextAnimation'
 
 interface TeamGridProps {
-  containerRef?: React.RefObject<HTMLDivElement>
+  teamMembers: TeamMember[]
 }
 
-const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
+const TeamMembersGrid: React.FC<TeamGridProps> = ({ teamMembers }) => {
   const localContainerRef = useRef<HTMLDivElement>(null)
-  const effectiveContainerRef = containerRef || localContainerRef
+  const effectiveContainerRef = localContainerRef
+  const lastScrollUpdate = useRef(0)
+  const SCROLL_THROTTLE_MS = 16 // ~60fps
+  const throttledValue = useMotionValue(0)
 
   const lenisRef = useRef<React.ElementRef<typeof ReactLenis>>(null)
   const [teamTextVisible, setTeamTextVisible] = useState(false)
@@ -24,78 +37,76 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
     typeof window !== 'undefined' ? window.innerWidth : 1200
   )
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
+  const [isDataLoaded, setIsDataLoaded] = useState(false)
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Fetch team members data
-  useEffect(() => {
-    const loadTeamMembers = async () => {
-      setIsLoading(true)
-      try {
-        const data = await fetchTeamMembers()
-        setTeamMembers(data)
-      } catch (error) {
-        console.error('Failed to load team members:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadTeamMembers()
-  }, [])
+  // Memoize the member lookup function
+  const findMemberById = useCallback(
+    (id: number) => teamMembers.find((m) => m.id === id),
+    [teamMembers]
+  )
 
   // Check URL on initial load to see if a member modal should be opened
   useEffect(() => {
     const memberId = searchParams.get('member')
     if (memberId && teamMembers.length > 0) {
-      const member = teamMembers.find((m) => m.id === parseInt(memberId, 10))
+      const member = findMemberById(parseInt(memberId, 10))
       if (member) {
         setSelectedMember(member)
-        setIsModalOpen(true)
       }
     }
-  }, [searchParams, teamMembers])
+  }, [searchParams, teamMembers, findMemberById])
 
   // Handle modal opening
-  const openModal = (member: TeamMember) => {
-    setSelectedMember(member)
-    setIsModalOpen(true)
-    // Update URL with the selected member id
-    const newUrl = window.location.pathname + `?member=${member.id}`
-    window.history.pushState({ memberId: member.id }, '', newUrl)
-  }
+  const openModal = useCallback(
+    (member: TeamMember) => {
+      setSelectedMember(member)
+      router.push(`?member=${member.id}`, { scroll: false })
+    },
+    [router]
+  )
 
   // Handle modal closing
-  const closeModal = () => {
-    setIsModalOpen(false)
-    // Remove the member parameter from the URL
-    const newUrl = window.location.pathname
-    window.history.pushState({}, '', newUrl)
-  }
+  const closeModal = useCallback(() => {
+    setSelectedMember(null)
+    router.push(window.location.pathname, { scroll: false })
+  }, [router])
 
   // Set up Lenis with Framer Motion
   useEffect(() => {
+    if (!lenisRef.current?.lenis) return
+
     function update(data: { timestamp: number }) {
-      const time = data.timestamp
-      lenisRef.current?.lenis?.raf(time)
+      lenisRef.current?.lenis?.raf(data.timestamp)
     }
 
     frame.update(update, true)
-
     return () => cancelFrame(update)
-  }, [])
+  }, [lenisRef.current?.lenis])
 
-  // Add this useEffect to handle window resize
+  // Update the window resize handler to set isMobile state
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+
     const handleResize = () => {
-      setWindowWidth(window.innerWidth)
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        const width = window.innerWidth
+        setWindowWidth(width)
+        setIsMobile(width < 640)
+      }, 150) // Debounce resize events
     }
 
+    // Set initial state
+    handleResize()
+
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(timeoutId)
+    }
   }, [])
 
   // Handle back button navigation
@@ -103,27 +114,39 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
     const handlePopState = (event: PopStateEvent) => {
       const memberId = event.state?.memberId
       if (memberId) {
-        const member = teamMembers.find((m) => m.id === memberId)
+        const member = findMemberById(memberId)
         if (member) {
           setSelectedMember(member)
-          setIsModalOpen(true)
         }
       } else {
-        setIsModalOpen(false)
+        setSelectedMember(null)
       }
     }
 
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
-  }, [teamMembers])
+  }, [findMemberById])
 
   const { scrollYProgress } = useScroll({
     target: effectiveContainerRef,
     offset: ['start start', 'end end'],
   })
 
-  // First, define the function to distribute team members
-  const distributeTeamMembersEvenly = () => {
+  // Handle throttled scroll updates using lodash throttle
+  useEffect(() => {
+    const throttledUpdate = throttle((value: number) => {
+      throttledValue.set(value)
+    }, SCROLL_THROTTLE_MS)
+
+    const unsubscribe = scrollYProgress.onChange(throttledUpdate)
+    return () => {
+      unsubscribe()
+      throttledUpdate.cancel()
+    }
+  }, [scrollYProgress, throttledValue])
+
+  // Memoize the column distribution
+  const [leftColumn, middleColumn, rightColumn] = useMemo(() => {
     // First, create empty columns
     const columns: (TeamMember | null)[][] = [[], [], []]
 
@@ -151,19 +174,15 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
       }
     })
 
-    // Return columns with null placeholders intact
     return columns
-  }
+  }, [teamMembers])
 
-  // Then get the columns
-  const [leftColumn, middleColumn, rightColumn] = distributeTeamMembersEvenly()
-
-  // Now define the animations using the columns
+  // Optimize animation keyframes by reducing the number of transformations
   const leftColumnY = useTransform(
-    scrollYProgress,
+    throttledValue,
     [0, 0.3, 0.6, 0.9, 1],
     [
-      '-30vh',
+      '30vh',
       '10vh',
       '-60vh',
       `-${(leftColumn.length - 1) * 40}vh`,
@@ -172,7 +191,7 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
   )
 
   const middleColumnY = useTransform(
-    scrollYProgress,
+    throttledValue,
     [0, 0.3, 0.6, 0.9, 1],
     [
       '50vh',
@@ -184,7 +203,7 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
   )
 
   const rightColumnY = useTransform(
-    scrollYProgress,
+    throttledValue,
     [0, 0.3, 0.6, 0.9, 1],
     [
       '30vh',
@@ -195,58 +214,48 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
     ]
   )
 
-  // Add effect to update teamTextVisible based on scroll position
+  // Memoize the column animations object
+  const columnAnimations = useMemo(
+    () => ({
+      leftColumnY,
+      middleColumnY,
+      rightColumnY,
+    }),
+    [leftColumnY, middleColumnY, rightColumnY]
+  )
+
+  // Memoize the spacer height calculation
+  const spacerHeight = useMemo(() => {
+    if (windowWidth < 640) {
+      // For mobile, add some padding at the bottom to ensure all cards are visible
+      return '20vh'
+    }
+    return `${Math.max(200, 100 + (teamMembers.length / 3) * 50)}vh`
+  }, [windowWidth, teamMembers.length])
+
+  // Add effect to update teamTextVisible based on scroll position with lodash throttle
   useEffect(() => {
     // Initially hide the TEAM text
     setTeamTextVisible(false)
 
     // Show TEAM text only after scrolling past the hero section
-    const unsubscribe = scrollYProgress.onChange((value) => {
+    const throttledUpdate = throttle((value: number) => {
       if (value > 0.05) {
         setTeamTextVisible(true)
       } else {
         setTeamTextVisible(false)
       }
-    })
+    }, SCROLL_THROTTLE_MS)
 
-    return () => unsubscribe()
+    const unsubscribe = scrollYProgress.onChange(throttledUpdate)
+    return () => {
+      unsubscribe()
+      throttledUpdate.cancel()
+    }
   }, [scrollYProgress])
 
-  // Create a spring animation for the TEAM text Y position
-  const teamTextY = useTransform(
-    scrollYProgress,
-    [0.05, 0.2], // Extend the range to make it slower (from 0.05-0.15 to 0.05-0.25)
-    ['100vh', '0vh']
-  )
-
-  const teamTextOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.05, 0.1, 0.3, 0.4],
-    [0, 0, 1, 0.3, 0.2]
-  )
-
-  // Calculate spacer height based on screen size and content
-  const getSpacerHeight = () => {
-    if (windowWidth < 640) {
-      // For mobile, use a minimal spacer - just enough to allow scrolling to the last card
-      return 0 // No extra space for mobile
-    } else {
-      // For larger screens, use your original calculation
-      return Math.max(200, 100 + (teamMembers.length / 3) * 50) + 'vh'
-    }
-  }
-
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
-          <p className="mt-4 text-white">Loading team members...</p>
-        </div>
-      </div>
-    )
-  }
+  // Create a spring animation for the TEAM text Y position with optimized keyframes
+  const teamTextY = useTransform(throttledValue, [0.05, 0.15], ['100vh', '0vh'])
 
   return (
     <ReactLenis
@@ -262,31 +271,20 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
       }}
     >
       <div className="relative" ref={localContainerRef}>
-        {/* TEAM text - fixed in the background, only visible after scrolling */}
-        {teamTextVisible && (
-          <div className="pointer-events-none fixed top-0 left-0 z-0 flex h-screen w-full items-center justify-center">
-            <motion.h1
-              className="font-justice text-center text-[25vw] leading-none tracking-wider text-white md:text-[30vw]"
-              style={{ y: teamTextY, opacity: teamTextOpacity }}
-              transition={{
-                type: 'spring',
-                stiffness: 30, // Lower stiffness for slower movement
-                damping: 25, // Higher damping for less bounce
-                mass: 2, // Higher mass makes it move slower
-              }}
-            >
-              TEAM
-            </motion.h1>
-          </div>
-        )}
+        {/* Show TeamTextAnimation on both mobile and desktop */}
+        <TeamTextAnimation
+          containerRef={effectiveContainerRef as React.RefObject<HTMLDivElement>}
+        />
+
+        {/* Hero section spacer */}
         <div className="h-[100vh]"></div>
 
-        {windowWidth < 640 ? (
-          // MOBILE VIEW - NOT STICKY, just normal scrolling with NO EXTRA SPACE
+        {windowWidth < 720 ? (
+          // MOBILE VIEW - NOT STICKY, just normal scrolling with proper spacing
           <div className="relative w-full">
-            <div className="grid grid-cols-1 gap-4 px-2">
+            <div className="grid grid-cols-1 gap-8 px-4">
               {teamMembers.map((member, index) => (
-                <div key={member.id} className={index < teamMembers.length - 1 ? 'mb-4' : ''}>
+                <div key={member.id} className="mx-auto w-full max-w-[462px]">
                   <TeamMemberCard {...member} onClick={() => openModal(member)} />
                 </div>
               ))}
@@ -298,7 +296,10 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
             <div className="w-full max-w-[1872px] px-6 max-md:px-4 max-sm:px-2">
               <div className="relative grid grid-cols-3 gap-8 md:gap-12 lg:gap-16">
                 {/* Left Column */}
-                <motion.div className="flex flex-col gap-8" style={{ y: leftColumnY }}>
+                <motion.div
+                  className="flex flex-col gap-8"
+                  style={{ y: columnAnimations.leftColumnY }}
+                >
                   {leftColumn.map((member, index) => (
                     <div
                       key={index}
@@ -310,7 +311,10 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
                 </motion.div>
 
                 {/* Middle Column */}
-                <motion.div className="flex flex-col gap-8" style={{ y: middleColumnY }}>
+                <motion.div
+                  className="flex flex-col gap-8"
+                  style={{ y: columnAnimations.middleColumnY }}
+                >
                   {middleColumn.map((member, index) => (
                     <div
                       key={index}
@@ -322,7 +326,10 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
                 </motion.div>
 
                 {/* Right Column */}
-                <motion.div className="flex flex-col gap-8" style={{ y: rightColumnY }}>
+                <motion.div
+                  className="flex flex-col gap-8"
+                  style={{ y: columnAnimations.rightColumnY }}
+                >
                   {rightColumn.map((member, index) => (
                     <div
                       key={index}
@@ -337,11 +344,15 @@ const TeamMembersGrid: React.FC<TeamGridProps> = ({ containerRef }) => {
           </div>
         )}
 
-        {/* Spacer with dynamic height calculation - ZERO for mobile */}
-        <div style={{ height: getSpacerHeight() }}></div>
+        {/* Spacer with dynamic height calculation */}
+        <div style={{ height: spacerHeight }}></div>
 
         {/* Team Member Modal */}
-        <TeamMemberModal isOpen={isModalOpen} onClose={closeModal} member={selectedMember} />
+        <TeamMemberModal
+          isOpen={Boolean(selectedMember)}
+          onClose={closeModal}
+          member={selectedMember}
+        />
       </div>
     </ReactLenis>
   )
