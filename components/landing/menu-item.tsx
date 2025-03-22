@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import LocalizedLink from '@/components/LocalizedLink'
+import { useTextTransform } from 'lib/use-text-transform'
 
 interface MenuItemProps {
   id: number
@@ -24,6 +25,7 @@ export function MenuItem({
   Number_label,
 }: MenuItemProps) {
   const baseFontSize = 'clamp(18px, calc(32 * var(--vw, 1) * 1px), 32px)'
+  const textStyle = useTextTransform()
 
   return (
     <motion.div onHoverStart={() => setHoveredItem(id)} onHoverEnd={() => setHoveredItem(null)}>
@@ -56,9 +58,7 @@ export function MenuItem({
                     ? 'clamp(16px, calc(24 * var(--vw, 1) * 1px), 24px)'
                     : baseFontSize,
               }}
-              style={{
-                lineHeight: '1',
-              }}
+              style={textStyle}
               transition={{ duration: 0.3, ease: 'easeOut' }}
             >
               {Label}

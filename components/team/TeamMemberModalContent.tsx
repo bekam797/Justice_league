@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { TeamMember } from './types'
 import { getStrapiMedia } from 'lib/utils'
+import UppercaseText from '@/components/common/UppercaseText'
 
 interface TeamMemberModalProps {
   isOpen: boolean
@@ -25,12 +26,12 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({ isOpen, onClose, memb
         />
       </div>
       <div className="flex flex-col justify-center">
-        <h2
-          id="modal-title"
-          className="font-justice w-fit bg-[#061A31] box-decoration-clone px-2 pr-0 pb-1 text-lg text-white uppercase sm:text-2xl"
+        <UppercaseText
+          className="font-justice bg-[#061A31] box-decoration-clone px-2 pr-0 pb-2 text-lg text-white uppercase sm:text-2xl"
+          tag="h2"
         >
           {member.name}
-        </h2>
+        </UppercaseText>
         <p className="font-helvetica mt-[-12px] w-fit bg-[#061A31] box-decoration-clone px-2 py-1 text-xs leading-4 font-light text-white/50 sm:text-sm md:text-base">
           {member.position}
         </p>

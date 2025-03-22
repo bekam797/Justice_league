@@ -30,5 +30,5 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
     slug: id,
   }
 
-  return <TeamMemberSinglePage member={transformedMember} />
+  return <TeamMemberSinglePage member={transformedMember} lang={lang} />
 }

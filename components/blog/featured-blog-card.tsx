@@ -3,6 +3,7 @@
 import Image from '@/components/Image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useTextTransform } from 'lib/use-text-transform'
 
 interface FeaturedBlogCardProps {
   title: string
@@ -11,6 +12,7 @@ interface FeaturedBlogCardProps {
 }
 
 export default function FeaturedBlogCard({ title, imageUrl, href }: FeaturedBlogCardProps) {
+  const textStyle = useTextTransform()
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -22,7 +24,10 @@ export default function FeaturedBlogCard({ title, imageUrl, href }: FeaturedBlog
           <div className="flex flex-col gap-6 p-4 md:flex-row">
             {/* Content Side */}
             <div className="flex flex-1 flex-col justify-between">
-              <h2 className="font-justice text-3xl leading-[120%] text-white uppercase md:text-5xl md:leading-[100%]">
+              <h2
+                className="font-justice text-3xl leading-[120%] text-white uppercase md:text-5xl md:leading-[100%]"
+                style={textStyle}
+              >
                 {title}
               </h2>
 

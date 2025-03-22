@@ -7,12 +7,14 @@ import { motion } from 'framer-motion'
 import { TeamMember } from '@/components/team/types'
 import Image from 'next/image'
 import { getStrapiMedia } from 'lib/utils'
+import UppercaseText from '@/components/common/UppercaseText'
 
 interface TeamMemberPageProps {
   member: TeamMember
+  lang: string
 }
 
-export default function TeamMemberSinglePage({ member }: TeamMemberPageProps) {
+export default function TeamMemberSinglePage({ member, lang }: TeamMemberPageProps) {
   if (!member) {
     notFound()
   }
@@ -30,7 +32,7 @@ export default function TeamMemberSinglePage({ member }: TeamMemberPageProps) {
       >
         <div className="p-3 lg:p-6">
           <Link
-            href="/team"
+            href={`/${lang}/team`}
             className="mb-8 inline-block text-white transition-colors hover:text-[#bfad60]"
           >
             ← Back to Team
@@ -52,9 +54,12 @@ export default function TeamMemberSinglePage({ member }: TeamMemberPageProps) {
                 />
               </div>
               <div className="flex flex-col justify-center">
-                <h1 className="font-justice inline-block w-fit bg-[#061A31] box-decoration-clone px-4 py-2 pr-0 text-3xl text-white uppercase">
+                <UppercaseText
+                  className="font-justice inline-block w-fit bg-[#061A31] box-decoration-clone px-4 py-2 pr-0 text-3xl text-white uppercase"
+                  tag="h1"
+                >
                   {member.name}
-                </h1>
+                </UppercaseText>
                 <p className="font-helvetica mt-[-12px] mb-6 w-fit bg-[#061A31] box-decoration-clone px-4 pt-0 pb-1 text-lg font-light text-white/70">
                   {member.position}
                 </p>
