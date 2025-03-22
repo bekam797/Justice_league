@@ -3,19 +3,20 @@
 import Image from 'next/image'
 import React from 'react'
 import { motion } from 'framer-motion'
+import LocalizedLink from '@/components/LocalizedLink'
 
 interface TeamMemberCardProps {
   imageUrl: string
   name: string
   position: string
-  onClick?: () => void
+  slug: string
 }
 
-const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ imageUrl, name, position, onClick }) => {
+const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ imageUrl, name, position, slug }) => {
   return (
-    <button
+    <LocalizedLink
+      href={`/team/${slug}`}
       className="mx-auto w-full max-w-[462px] cursor-pointer text-left transition-transform focus-visible:scale-[1.02] focus-visible:outline focus-visible:outline-offset-4 focus-visible:outline-yellow-500"
-      onClick={onClick}
       aria-label={`View details for ${name}, ${position}`}
     >
       <div className="relative aspect-[3/4] overflow-hidden rounded bg-white max-sm:aspect-[4/5]">
@@ -45,7 +46,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ imageUrl, name, positio
           </p>
         </footer>
       </div>
-    </button>
+    </LocalizedLink>
   )
 }
 export default TeamMemberCard

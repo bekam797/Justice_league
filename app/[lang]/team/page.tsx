@@ -1,5 +1,6 @@
 import HeroWithAnimation from '@/components/common/HeroWithAnimation'
 import { TeamJustice } from '@/components/icons/TeamJustice'
+import LocalizedLink from '@/components/LocalizedLink'
 import TeamMembersGrid from '@/components/team/TeamMembersGrid'
 import { getTeam } from 'datamain/loaders'
 import { getStrapiMedia } from 'lib/utils'
@@ -41,5 +42,6 @@ function formatTeamMember(teamMember) {
     imageUrl: getStrapiMedia(teamMember.imageUrl.url) || '',
     description: teamMember.description[0]?.children[0]?.text || '',
     socialLinks: teamMember.socialLinks[0] || {},
+    slug: teamMember.slug || `${teamMember.id}`,
   }
 }

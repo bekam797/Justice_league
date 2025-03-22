@@ -16,7 +16,6 @@ interface LayoutProps {
     lang: string
   }>
   children: React.ReactNode
-  modal: React.ReactNode
 }
 
 export const metadata: Metadata = {
@@ -75,7 +74,7 @@ export default async function GlobalLayout(props: LayoutProps) {
   return (
     <html
       lang={lang}
-      className={`${justice.variable} ${helvetica.variable} dark scroll-smooth`}
+      className={`${justice.variable} ${helvetica.variable} dark`}
       suppressHydrationWarning
     >
       <head>
@@ -119,11 +118,7 @@ export default async function GlobalLayout(props: LayoutProps) {
               />
 
               {props.children}
-
-              {props.modal}
-              <div id="modal-root" />
             </main>
-            {props.modal}
           </SearchProvider>
         </ThemeProviders>
       </body>

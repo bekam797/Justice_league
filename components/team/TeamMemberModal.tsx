@@ -1,87 +1,72 @@
-import Image from 'next/image'
-import { TeamMember } from './types'
-import { Dialog, DialogContent, DialogOverlay, DialogTitle } from '@/components/ui/dialog'
+'use client'
 
-interface TeamMemberModalProps {
-  isOpen: boolean
-  onClose: () => void
-  member: TeamMember | null
-}
+import { useCallback, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import TeamMemberModal from '@/components/team/TeamMemberModalContent'
+import { X } from 'lucide-react'
 
-const TeamMemberModal: React.FC<TeamMemberModalProps> = ({ isOpen, onClose, member }) => {
-  if (!member) return null
+export default function Modal({ member }) {
+  const overlay = useRef(null)
+  const wrapper = useRef(null)
+  const router = useRouter()
+
+  // Close modal
+  const onDismiss = useCallback(() => {
+    router.back()
+  }, [router])
+
+  // Close on escape key
+  const onKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Escape') onDismiss()
+    },
+    [onDismiss]
+  )
+
+  // Handle overlay click (close when clicking outside modal)
+  const onClick = useCallback(
+    (e) => {
+      if (e.target === overlay.current || e.target === wrapper.current) {
+        onDismiss()
+      }
+    },
+    [onDismiss, overlay, wrapper]
+  )
+
+  // Add event listeners
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [onKeyDown])
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogOverlay className="bg-black/70" />
-      <DialogContent className="modal-main-background max-h-[90vh] w-full max-w-4xl overflow-auto rounded-lg border border-[#061A31] p-6 shadow-none sm:max-w-4xl">
-        <DialogTitle className="sr-only">Team Member Profile: {member.name}</DialogTitle>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div className="relative aspect-[3/4] overflow-hidden rounded bg-white max-sm:aspect-[4/5]">
-            <Image
-              src={member.imageUrl}
-              alt={member.name}
-              className="h-full w-full object-cover"
-              width={600}
-              height={800}
-              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-              priority
-            />
-          </div>
-          <div className="flex flex-col justify-center">
-            <h2
-              id="modal-title"
-              className="font-justice w-fit bg-[#061A31] box-decoration-clone px-2 pr-0 pb-1 text-lg text-white uppercase sm:text-2xl"
-            >
-              {member.name}
-            </h2>
-            <p className="font-helvetica mt-[-12px] w-fit bg-[#061A31] box-decoration-clone px-2 py-1 text-xs leading-4 font-light text-white/50 sm:text-sm md:text-base">
-              {member.position}
-            </p>
+    <div
+      ref={overlay}
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+    >
+      <motion.div
+        ref={wrapper}
+        className="modal-main-background relative max-h-[90vh] w-full max-w-4xl overflow-auto rounded-lg border border-[#061A31] p-6 shadow-none sm:max-w-4xl"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.2 }}
+      >
+        <button
+          onClick={onDismiss}
+          className="absolute top-4 right-4 rounded-full p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:ring-2 focus:ring-white/30 focus:outline-none"
+          aria-label="Close modal"
+        >
+          <X size={24} />
+        </button>
 
-            {/* Display team member description from data */}
-            <div className="text-white/80">
-              <p className="mb-4">{member.description}</p>
-            </div>
-
-            {/* Display social media links from data */}
-            {member.socialLinks && (
-              <div className="mt-6 flex space-x-4">
-                {member.socialLinks.linkedin && (
-                  <a
-                    href={member.socialLinks.linkedin}
-                    className="text-white hover:text-[#bfad60] focus:ring-2 focus:ring-[#bfad60] focus:ring-offset-2 focus:outline-none"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    LinkedIn
-                  </a>
-                )}
-                {member.socialLinks.twitter && (
-                  <a
-                    href={member.socialLinks.twitter}
-                    className="text-white hover:text-[#bfad60] focus:ring-2 focus:ring-[#bfad60] focus:ring-offset-2 focus:outline-none"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Twitter
-                  </a>
-                )}
-                {member.socialLinks.email && (
-                  <a
-                    href={`mailto:${member.socialLinks.email}`}
-                    className="text-white hover:text-[#bfad60] focus:ring-2 focus:ring-[#bfad60] focus:ring-offset-2 focus:outline-none"
-                  >
-                    Email
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        <TeamMemberModal isOpen={true} onClose={onDismiss} member={member} />
+      </motion.div>
+    </div>
   )
 }
-
-export default TeamMemberModal
