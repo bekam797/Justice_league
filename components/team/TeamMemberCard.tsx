@@ -40,7 +40,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ imageUrl, name, positio
         </motion.div>
         <footer className="absolute bottom-4 left-4">
           <UppercaseText
-            className="font-justice bg-[#061A31] box-decoration-clone px-2 pr-0 pb-1 text-lg text-white uppercase sm:text-2xl"
+            className="font-justice w-fit bg-[#061A31] box-decoration-clone px-2 pr-0 pb-1 text-lg text-white uppercase sm:text-2xl"
             tag="h2"
           >
             {name}

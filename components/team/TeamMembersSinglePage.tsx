@@ -2,24 +2,21 @@
 
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { TeamMember } from '@/components/team/types'
 import Image from 'next/image'
 import { getStrapiMedia } from 'lib/utils'
 import UppercaseText from '@/components/common/UppercaseText'
+import LocalizedLink from '@/components/LocalizedLink'
 
 interface TeamMemberPageProps {
   member: TeamMember
-  lang: string
 }
 
-export default function TeamMemberSinglePage({ member, lang }: TeamMemberPageProps) {
+export default function TeamMemberSinglePage({ member }: TeamMemberPageProps) {
   if (!member) {
     notFound()
   }
-
-  console.log(member, 'member')
 
   return (
     <div className="mt-28">
@@ -31,12 +28,12 @@ export default function TeamMemberSinglePage({ member, lang }: TeamMemberPagePro
         }
       >
         <div className="p-3 lg:p-6">
-          <Link
-            href={`/${lang}/team`}
+          <LocalizedLink
+            href={`/team`}
             className="mb-8 inline-block text-white transition-colors hover:text-[#bfad60]"
           >
             ← Back to Team
-          </Link>
+          </LocalizedLink>
           <motion.div
             className="mx-auto w-full"
             initial={{ opacity: 0, y: 20 }}
@@ -49,8 +46,8 @@ export default function TeamMemberSinglePage({ member, lang }: TeamMemberPagePro
                   src={getStrapiMedia(member.imageUrl) || '/placeholder.svg'}
                   alt={member.name}
                   className="h-full w-full object-cover"
-                  width={600}
-                  height={800}
+                  width={400}
+                  height={433}
                 />
               </div>
               <div className="flex flex-col justify-center">
