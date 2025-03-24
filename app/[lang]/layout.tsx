@@ -9,15 +9,22 @@ interface RootLayoutProps {
   params: Promise<{
     lang: string
   }>
+  serviceModal: React.ReactNode
 }
 
-export default async function RootLayout({ children, modal, params }: RootLayoutProps) {
+export default async function RootLayout({
+  children,
+  modal,
+  params,
+  serviceModal,
+}: RootLayoutProps) {
   const { lang } = await params
 
   return (
     <div key={lang}>
       {children}
       {modal}
+      {serviceModal}
     </div>
   )
 }

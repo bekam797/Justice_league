@@ -49,7 +49,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       setShowContent(true)
     }
     // For team page after initial load, skip animation but show template
-    else if (pathname.includes('/team')) {
+    else if (pathname.includes('/team') || pathname.includes('/services')) {
       setIsLoading(false)
       setShowContent(true)
     }
@@ -73,7 +73,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }
 
   // For team pages after initial load completed, use simpler template
-  if (pathname.includes('/team') && hasCompletedInitialLoad && !isLoading) {
+  if (
+    (pathname.includes('/team') || pathname.includes('/services')) &&
+    hasCompletedInitialLoad &&
+    !isLoading
+  ) {
     return (
       <>
         <DynamicHeader />

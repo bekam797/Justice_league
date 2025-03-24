@@ -24,3 +24,25 @@ interface TeamMember {
   }[]
   // other properties as needed
 }
+
+interface ServicesResponse {
+  data: {
+    id: number
+    title: string
+    description: string
+    services: Array<{
+      id: number
+      Title: string
+      slug: string
+      small_description: string
+      image: Array<{ url: string; alternativeText: string }>
+      service_content: Array<{ body: string }>
+    }>
+    createdAt: string
+    documentId: string
+    locale: string
+    publishedAt: string
+    updatedAt: string
+  }
+  meta: object
+}

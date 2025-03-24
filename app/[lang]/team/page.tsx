@@ -1,6 +1,5 @@
 import HeroWithAnimation from '@/components/common/HeroWithAnimation'
 import { TeamJustice } from '@/components/icons/TeamJustice'
-import LocalizedLink from '@/components/LocalizedLink'
 import TeamMembersGrid from '@/components/team/TeamMembersGrid'
 import { getTeam } from 'datamain/loaders'
 import { getStrapiMedia } from 'lib/utils'
