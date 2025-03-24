@@ -28,10 +28,10 @@ const ServicesCard: React.FC<ServicesCardProps> = ({
   return (
     <LocalizedLink
       href={`/services/${slug}`}
-      className="flex max-w-[462px] flex-col justify-center overflow-hidden rounded-sm bg-white p-4 text-black"
+      className="flex h-[605px] max-w-[462px] flex-col justify-center overflow-hidden rounded-sm bg-white p-4 text-black"
       aria-label={`View details for ${title}, ${smallDescription}`}
     >
-      <section className="flex w-full flex-col rounded-xs border border-solid border-black">
+      <section className="flex h-full w-full flex-col rounded-xs border border-solid border-black">
         <header className="flex w-full justify-between gap-5 p-4 pb-0">
           <h2 className="font-justice w-full text-4xl leading-10">{title}</h2>
           <span className="self-start text-right text-sm leading-none">
@@ -40,11 +40,11 @@ const ServicesCard: React.FC<ServicesCardProps> = ({
           </span>
         </header>
 
-        <figure className="mt-16 mb-6 w-full self-start">
+        <figure className="mt-16 mb-6 w-full flex-grow self-start">
           <Image
             src={getStrapiMedia(image[0]?.url) || ''}
             alt={image[0]?.alternativeText || ''}
-            className="aspect-[1.87] w-full object-contain"
+            className="aspect-[1.87] h-full w-full object-contain"
             width={342}
             height={442}
           />
