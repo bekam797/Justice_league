@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import SectionBadge from '../common/SectionBadge'
+import UppercaseText from '@/components/common/UppercaseText'
 interface BlogFilterProps {
   title: string
   filters: string[]
@@ -18,9 +19,9 @@ export function BlogFilter({ title, filters, onFilterChange }: BlogFilterProps) 
     <div className="flex flex-col gap-4 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
       <SectionBadge title={title} />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <span className="font-helvetica text-base tracking-wider text-white uppercase">
+        <UppercaseText className="font-helvetica text-base tracking-wider text-white uppercase">
           Filter By:
-        </span>
+        </UppercaseText>
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2 sm:pb-0">
           {filters.map((filter) => (
             <button

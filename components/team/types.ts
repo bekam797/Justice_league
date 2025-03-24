@@ -3,6 +3,7 @@ export interface TeamMember {
   name: string
   position: string
   imageUrl: string
+  slug: string
   specialties?: { name: string }[]
   description?: string
   socialLinks?: {

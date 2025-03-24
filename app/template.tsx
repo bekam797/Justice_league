@@ -18,47 +18,83 @@ const transition = {
   ease: [0.88, 0, 0.15, 1],
 }
 
+// Track initial load with a module-level variable that persists between renders
+// but is reset on page refresh
+let hasCompletedInitialLoad = false
+
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    // For first-time page load, always show animation
+    if (!hasCompletedInitialLoad) {
+      setIsLoading(true)
+      setShowContent(false)
 
-  useEffect(() => {
-    if (!mounted) return
+      // Set a timer to finish the animation
+      const timer = setTimeout(() => {
+        setIsLoading(false)
+        setShowContent(true)
+        // Mark that we've completed the initial load
+        hasCompletedInitialLoad = true
+      }, 800)
 
-    // Skip animation for home page and modal routes
-    if (pathname === '/' || pathname.includes('/team/')) {
-      setIsLoading(false)
-      setShowContent(true)
-      return
+      return () => clearTimeout(timer)
     }
-
-    setIsLoading(true)
-    setShowContent(false)
-
-    const timer = setTimeout(() => {
+    // For home page, skip animation and template
+    else if (pathname === '/') {
       setIsLoading(false)
       setShowContent(true)
-    }, 800)
+    }
+    // For team page after initial load, skip animation but show template
+    else if (pathname.includes('/team') || pathname.includes('/services')) {
+      setIsLoading(false)
+      setShowContent(true)
+    }
+    // For other pages after initial load, show animation
+    else {
+      setIsLoading(true)
+      setShowContent(false)
 
-    return () => clearTimeout(timer)
-  }, [pathname, mounted])
+      const timer = setTimeout(() => {
+        setIsLoading(false)
+        setShowContent(true)
+      }, 800)
 
-  // Skip template for home page and modal routes
-  if (pathname === '/' || pathname.includes('/team/')) return <>{children}</>
+      return () => clearTimeout(timer)
+    }
+  }, [pathname])
 
+  // Skip template for home page
+  if (pathname === '/' && !isLoading) {
+    return <>{children}</>
+  }
+
+  // For team pages after initial load completed, use simpler template
+  if (
+    (pathname.includes('/team') || pathname.includes('/services')) &&
+    hasCompletedInitialLoad &&
+    !isLoading
+  ) {
+    return (
+      <>
+        <DynamicHeader />
+        {children}
+        <DynamicFooter />
+      </>
+    )
+  }
+
+  // For all other cases, use animated template
   return (
     <div>
       <AnimatePresence mode="popLayout">
         {showContent && (
           <motion.div
             key={pathname}
-            initial="initial"
+            initial={false}
             animate="animate"
             exit="exit"
             variants={contentVariants}

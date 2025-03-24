@@ -1,5 +1,6 @@
 import CategoryButton from '@/components/blog/category-button'
 import SectionBadge from '@/components/common/SectionBadge'
+import UppercaseText from '@/components/common/UppercaseText'
 import { getCategories } from 'datamain/loaders'
 
 interface CategorySelectProps {
@@ -15,9 +16,12 @@ export const CategorySelect = async ({ locale }: CategorySelectProps) => {
     <div className="flex flex-col gap-4 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
       <SectionBadge title="Blog" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <span className="font-helvetica text-base tracking-wider text-white uppercase">
+        <UppercaseText
+          className="font-helvetica text-base tracking-wider text-white uppercase"
+          tag="span"
+        >
           Filter By:
-        </span>
+        </UppercaseText>
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2 sm:pb-0">
           <CategoryButton value="">All Posts</CategoryButton>
           {categories?.map((category) => (

@@ -1,14 +1,14 @@
 import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
-import '../css/fonts.css'
+import './fonts.css'
 
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
-import { justice, helvetica } from '@/css/fonts'
+import { justice, helvetica } from 'app/fonts'
 import { getAvailableLocales } from 'datamain/services/locales'
 
 interface LayoutProps {
@@ -16,7 +16,6 @@ interface LayoutProps {
     lang: string
   }>
   children: React.ReactNode
-  modal: React.ReactNode
 }
 
 export const metadata: Metadata = {
@@ -75,7 +74,7 @@ export default async function GlobalLayout(props: LayoutProps) {
   return (
     <html
       lang={lang}
-      className={`${justice.variable} ${helvetica.variable} dark scroll-smooth`}
+      className={`${justice.variable} ${helvetica.variable} dark`}
       suppressHydrationWarning
     >
       <head>
@@ -119,11 +118,7 @@ export default async function GlobalLayout(props: LayoutProps) {
               />
 
               {props.children}
-
-              {props.modal}
-              <div id="modal-root" />
             </main>
-            {props.modal}
           </SearchProvider>
         </ThemeProviders>
       </body>

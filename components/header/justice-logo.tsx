@@ -1,9 +1,9 @@
 import { SVGProps } from 'react'
 
 export function JusticeLogo({
-  isScrolled,
+  className,
   ...props
-}: { isScrolled: boolean } & SVGProps<SVGSVGElement>) {
+}: { className?: string } & SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="114"
@@ -11,7 +11,7 @@ export function JusticeLogo({
       viewBox="0 0 114 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`text-white ${isScrolled ? 'opacity-20' : 'opacity-100'}`}
+      className={`text-white ${className}`}
       {...props}
     >
       <path

@@ -41,5 +41,6 @@ function formatTeamMember(teamMember) {
     imageUrl: getStrapiMedia(teamMember.imageUrl.url) || '',
     description: teamMember.description[0]?.children[0]?.text || '',
     socialLinks: teamMember.socialLinks[0] || {},
+    slug: teamMember.slug || `${teamMember.id}`,
   }
 }

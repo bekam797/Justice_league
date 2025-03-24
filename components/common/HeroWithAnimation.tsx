@@ -77,7 +77,7 @@ export default function HeroWithAnimation({
       {/* Scroll Down Indicator */}
       <motion.div
         style={{ y: scrollIndicatorY, opacity: scrollIndicatorOpacity }}
-        className="absolute bottom-1 left-4 z-10 cursor-pointer lg:bottom-8 lg:left-8"
+        className="absolute bottom-1 left-4 z-10 lg:bottom-8 lg:left-8"
       >
         <motion.div
           initial={{ opacity: 0 }}

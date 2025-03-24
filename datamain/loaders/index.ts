@@ -290,3 +290,106 @@ export async function getTeam(locale: string): Promise<TeamResponse> {
     return { data: { id: 0, title: '', description: '', team_members: [], socialLinks: {} } }
   }
 }
+
+export async function getTeamMemberBySlug(
+  slug: string,
+  locale: string
+): Promise<TeamMemberResponse> {
+  try {
+    const params = {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      populate: {
+        imageUrl: {
+          fields: ['url', 'alternativeText', 'name'],
+        },
+        socialLinks: {
+          fields: ['linkedin', 'twitter', 'email'],
+        },
+      },
+      locale,
+    }
+
+    const response = await sdk.collection('team-members').find(params)
+
+    return response as unknown as TeamMemberResponse
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response.data)
+    }
+    return { data: [], meta: {} }
+  }
+}
+
+export async function getServices(locale: string): Promise<ServicesResponse> {
+  try {
+    const params = {
+      populate: {
+        services: {
+          populate: ['image', 'service_content', 'seo'],
+        },
+      },
+      locale,
+    }
+
+    const services = await sdk.single('service-page').find(params)
+    return services as unknown as ServicesResponse
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response.data)
+    }
+    return {
+      data: {
+        id: 0,
+        title: '',
+        description: '',
+        services: [],
+        createdAt: '',
+        documentId: '',
+        locale: '',
+        publishedAt: '',
+        updatedAt: '',
+      },
+      meta: {},
+    }
+  }
+}
+
+export async function getServicesBySlug(slug: string, locale: string) {
+  try {
+    const params = {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      populate: {
+        image: {
+          fields: ['url', 'alternativeText', 'name'],
+        },
+        service_content: true, // Note: keeping the typo as it appears in the API schema
+        seo: {
+          populate: {
+            shareImage: {
+              fields: ['url', 'alternativeText', 'name'],
+            },
+          },
+        },
+      },
+      locale,
+    }
+
+    const service = await sdk.collection('services').find(params)
+
+    console.log(service, 'service')
+    return service
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response.data)
+    }
+    return { data: [], meta: {} }
+  }
+}

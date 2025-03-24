@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import TeamMemberModal from '@/components/team/TeamMemberModalContent'
+import ServicesModalContent from '@/components/services/ServicesModalContent'
 import { X } from 'lucide-react'
+import UppercaseText from '@/components/common/UppercaseText'
 import { useLenis } from 'lenis/react'
 
-export default function Modal({ member }) {
+export default function ServicesModal({ services }) {
   const overlay = useRef(null)
   const wrapper = useRef(null)
   const router = useRouter()
@@ -77,15 +78,20 @@ export default function Modal({ member }) {
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <button
-          onClick={onDismiss}
-          className="absolute top-4 right-4 rounded-full p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:ring-2 focus:ring-white/30 focus:outline-none"
-          aria-label="Close modal"
-        >
-          <X size={24} />
-        </button>
+        <header className="flex items-center justify-between">
+          <UppercaseText className="font-justice text-4xl text-white max-md:text-3xl max-sm:text-2xl">
+            {services.title}
+          </UppercaseText>
+          <button
+            onClick={onDismiss}
+            aria-label="Close"
+            className="focus:ring-2 focus:ring-white focus:outline-none"
+          >
+            <X size={24} />
+          </button>
+        </header>
 
-        <TeamMemberModal isOpen={true} onClose={onDismiss} member={member} />
+        <ServicesModalContent isOpen={true} onClose={onDismiss} services={services} />
       </motion.div>
     </div>
   )

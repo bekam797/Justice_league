@@ -36,7 +36,7 @@ export default function LocalizedLink({
   const localizedHref = href.startsWith('/') ? `${localePrefix}${href}` : href
 
   return (
-    <Link href={localizedHref} className={className} {...rest}>
+    <Link href={localizedHref} className={className} scroll={false} {...rest}>
       {children}
     </Link>
   )
