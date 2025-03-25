@@ -393,3 +393,64 @@ export async function getServicesBySlug(slug: string, locale: string) {
     return { data: [], meta: {} }
   }
 }
+
+interface ContactDetail {
+  id: number
+  label: string
+  value: string
+}
+
+interface ContactPageResponse {
+  data: {
+    id: number
+    documentId: string
+    title: string
+    address: string
+    nameLabel: string
+    surnameLabel: string
+    emailLabel: string
+    messageLabel: string
+    submitButtonText: string
+    contactDetails: ContactDetail[]
+    createdAt: string
+    updatedAt: string
+    publishedAt: string
+    locale: string
+  }
+  meta: Record<string, unknown>
+}
+
+export async function getContactPage(locale: string): Promise<ContactPageResponse> {
+  try {
+    const params = {
+      populate: '*',
+      locale,
+    }
+
+    const contactPage = await sdk.single('contact-page').find(params)
+    return contactPage as unknown as ContactPageResponse
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response)
+    }
+    return {
+      data: {
+        id: 0,
+        documentId: '',
+        title: '',
+        address: '',
+        nameLabel: '',
+        surnameLabel: '',
+        emailLabel: '',
+        messageLabel: '',
+        submitButtonText: '',
+        contactDetails: [],
+        createdAt: '',
+        updatedAt: '',
+        publishedAt: '',
+        locale: '',
+      },
+      meta: {},
+    }
+  }
+}
