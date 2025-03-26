@@ -6,7 +6,36 @@ import { remark } from 'remark'
 import remarkHtml from 'remark-html'
 import remarkGfm from 'remark-gfm'
 
-export default function AboutContent({ aboutData }: { aboutData: any }) {
+interface AboutData {
+  id: number
+  documentId: string
+  blocks: Array<{
+    id: number
+    body: string
+  }>
+  image: {
+    id: number
+    url: string
+    alternativeText: string
+    name: string
+  }
+  seo: Array<{
+    id: number
+    metaTitle: string
+    metaDescription: string
+    shareImage: {
+      id: number
+      url: string
+      alternativeText: string
+    }
+  }>
+  createdAt: string
+  updatedAt: string
+  publishedAt: string
+  locale: string
+}
+
+export default function AboutContent({ aboutData }: { aboutData: AboutData }) {
   const [htmlContent, setHtmlContent] = useState<string>('')
 
   useEffect(() => {
@@ -26,7 +55,7 @@ export default function AboutContent({ aboutData }: { aboutData: any }) {
       {aboutData.image && (
         <StrapiImage
           src={aboutData?.image?.url}
-          alt={aboutData?.image?.alternativeText || aboutData?.title}
+          alt={aboutData?.image?.alternativeText || aboutData?.seo[0]?.metaTitle}
           className="mt-0 mb-8 w-full rounded-xs"
           width={800}
           height={400}
