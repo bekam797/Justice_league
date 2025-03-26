@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { LanguageSelector } from '@/components/landing/language-selector'
 import { getMenuItemData } from 'datamain/loaders'
 import { useParams } from 'next/navigation'
+import { useTranslation } from 'lib/contexts/TranslationContext'
 
 // Define interface for menu items
 interface Localization {
@@ -115,6 +116,7 @@ export default function AnimatedMenu() {
   const buttonRef = useRef<HTMLDivElement>(null)
   const params = useParams()
   const { isDesktop } = useResponsive()
+  const { t } = useTranslation()
 
   // Animation variants with responsive values
   const menuVariants = {
@@ -288,7 +290,7 @@ export default function AnimatedMenu() {
             {/* Text with Simple Hover Effect */}
             <div className="font-justice text-base">
               <div className="text-white uppercase transition-opacity duration-300 hover:opacity-70">
-                {isActive ? 'Close' : 'Menu'}
+                {isActive ? t('common.close', 'Close') : t('common.menu', 'Menu')}
               </div>
             </div>
 

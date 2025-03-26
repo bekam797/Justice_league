@@ -6,6 +6,7 @@ import { ArrowCoolDownIcon } from '@/components/icons/arrows'
 import { Briefcase } from '@/components/icons/BriefCase'
 import { motion, useTransform, useSpring, useScroll } from 'framer-motion'
 import { useEffect, useState, useRef, ReactNode } from 'react'
+import { useTranslation } from '../../lib/contexts/TranslationContext'
 
 interface HeroWithAnimationProps {
   badgeTitle?: string
@@ -20,6 +21,7 @@ export default function HeroWithAnimation({
   backgroundSvg = <Briefcase className="h-full w-full" />,
   svgSize = { width: 800, height: 800 }, // Default size that won't scale with viewport
 }: HeroWithAnimationProps) {
+  const { t } = useTranslation()
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
   const [sectionHeight, setSectionHeight] = useState(0)
@@ -85,7 +87,9 @@ export default function HeroWithAnimation({
           transition={{ delay: 1, duration: 0.5 }}
           className="font-helvetica flex origin-left rotate-[-90deg] flex-row-reverse items-center text-sm tracking-wider text-white uppercase"
         >
-          <span className="text-sm tracking-wider text-white uppercase">Scroll Down</span>
+          <span className="text-sm tracking-wider text-white uppercase">
+            {t('common.scrollDown', 'scroll down')}
+          </span>
           <motion.div>
             <ArrowCoolDownIcon className="mr-2 h-6 w-6 rotate-[90deg] animate-bounce text-white" />
           </motion.div>

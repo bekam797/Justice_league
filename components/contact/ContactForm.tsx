@@ -43,13 +43,17 @@ export default function ContactForm({
 
     try {
       // Send data to Strapi API
-      const response = await fetch('http://localhost:1337/api/contacts/email', {
+      const response = await fetch('http://localhost:1337/api/email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       })
+
+      const responcedata = await response.json()
+
+      console.log(responcedata, 'response')
 
       if (!response.ok) {
         throw new Error('Failed to submit form')
@@ -79,8 +83,8 @@ export default function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="w-full space-y-2">
+      <div className="grid grid-cols-2 gap-2">
         <div>
           <Input
             name="name"

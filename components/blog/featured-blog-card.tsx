@@ -4,7 +4,7 @@ import Image from '@/components/Image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useTextTransform } from 'lib/use-text-transform'
-
+import { useTranslation } from 'lib/contexts/TranslationContext'
 interface FeaturedBlogCardProps {
   title: string
   imageUrl: string
@@ -13,6 +13,7 @@ interface FeaturedBlogCardProps {
 
 export default function FeaturedBlogCard({ title, imageUrl, href }: FeaturedBlogCardProps) {
   const textStyle = useTextTransform()
+  const { t } = useTranslation()
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -32,7 +33,7 @@ export default function FeaturedBlogCard({ title, imageUrl, href }: FeaturedBlog
               </h2>
 
               <span className="font-helvetica mt-4 self-start text-base text-[#BFAD60] group-hover:underline">
-                [Read More]
+                [{t('common.readMore', 'Read More')}]
               </span>
             </div>
 

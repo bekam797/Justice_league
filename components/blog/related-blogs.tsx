@@ -6,6 +6,7 @@ import Link from 'next/link'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowDownward } from '@/components/icons/arrows'
 import { EmblaOptionsType } from 'embla-carousel'
+import { useTranslation } from 'lib/contexts/TranslationContext'
 
 interface BlogPost {
   id: string
@@ -17,11 +18,11 @@ interface BlogPost {
 
 interface RelatedBlogsProps {
   posts?: BlogPost[]
-  title?: string
   locale?: string
 }
 
-export function RelatedBlogs({ posts, title = 'MORE BLOGS LIKE THIS', locale }: RelatedBlogsProps) {
+export function RelatedBlogs({ posts, locale }: RelatedBlogsProps) {
+  const { t } = useTranslation()
   const [emblaRef, emblaApi] = useEmblaCarousel()
   const [options, setOptions] = useState<EmblaOptionsType>({
     slidesToScroll: 4,
@@ -108,7 +109,9 @@ export function RelatedBlogs({ posts, title = 'MORE BLOGS LIKE THIS', locale }: 
       <div className="mx-auto w-full px-4 py-6 md:px-6">
         {/* Header with title and navigation */}
         <div className="mx-auto mb-5 flex max-w-[930px] items-center justify-between">
-          <h2 className="font-helvetica text-2xl font-light text-white">{title}</h2>
+          <h2 className="font-helvetica text-2xl font-light text-white">
+            {t('common.moreBlogs', 'More Blogs Like This')}
+          </h2>
           <div className="flex gap-2">
             <button
               onClick={scrollPrev}

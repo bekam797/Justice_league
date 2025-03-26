@@ -454,3 +454,153 @@ export async function getContactPage(locale: string): Promise<ContactPageRespons
     }
   }
 }
+
+interface AboutPageResponse {
+  data: {
+    id: number
+    documentId: string
+    blocks: Array<{
+      id: number
+      body: string
+    }>
+    image: {
+      id: number
+      url: string
+      alternativeText: string
+      name: string
+    }
+    seo: Array<{
+      id: number
+      metaTitle: string
+      metaDescription: string
+      shareImage: {
+        id: number
+        url: string
+        alternativeText: string
+        name: string
+      }
+    }>
+    createdAt: string
+    updatedAt: string
+    publishedAt: string
+    locale: string
+  }
+  meta: Record<string, unknown>
+}
+
+export async function getAboutPage(locale: string): Promise<AboutPageResponse> {
+  try {
+    const params = {
+      populate: {
+        image: {
+          fields: ['url', 'alternativeText', 'name'],
+        },
+        blocks: {
+          populate: '*',
+        },
+        seo: {
+          populate: {
+            shareImage: {
+              fields: ['url', 'alternativeText', 'name'],
+            },
+          },
+        },
+      },
+      locale,
+    }
+
+    console.log('Fetching about page with params:', params)
+    const aboutPage = await sdk.single('about').find(params)
+    console.log('About page response:', aboutPage)
+
+    if (!aboutPage || !aboutPage.data) {
+      console.error('No data returned from about page API')
+      throw new Error('No data returned from about page API')
+    }
+
+    return aboutPage as unknown as AboutPageResponse
+  } catch (error) {
+    console.error('Error in getAboutPage:', error)
+    if (error.response) {
+      console.error('API Error Response:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+      })
+    }
+    if (error.request) {
+      console.error('API Request:', error.request)
+    }
+    if (error.message) {
+      console.error('Error Message:', error.message)
+    }
+
+    return {
+      data: {
+        id: 0,
+        documentId: '',
+        blocks: [],
+        image: {
+          id: 0,
+          url: '',
+          alternativeText: '',
+          name: '',
+        },
+        seo: [],
+        createdAt: '',
+        updatedAt: '',
+        publishedAt: '',
+        locale: '',
+      },
+      meta: {},
+    }
+  }
+}
+
+interface TranslationResponse {
+  data: {
+    id: number
+    documentId: string
+    translations: string
+    createdAt: string
+    updatedAt: string
+    publishedAt: string
+    locale: string
+    localizations: Array<{
+      id: number
+      documentId: string
+      translations: string
+      locale: string
+    }>
+  }
+  meta: Record<string, unknown>
+}
+
+export async function getTranslations(locale: string): Promise<TranslationResponse> {
+  try {
+    const params = {
+      populate: '*',
+      locale,
+    }
+
+    const translations = await sdk.single('translation').find(params)
+    return translations as unknown as TranslationResponse
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response.data)
+    }
+    return {
+      data: {
+        id: 0,
+        documentId: '',
+        translations: '',
+        createdAt: '',
+        updatedAt: '',
+        publishedAt: '',
+        locale: '',
+        localizations: [],
+      },
+      meta: {},
+    }
+  }
+}

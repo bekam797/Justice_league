@@ -10,6 +10,7 @@ import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import { justice, helvetica } from 'app/fonts'
 import { getAvailableLocales } from 'datamain/services/locales'
+import { TranslationProvider } from 'lib/contexts/TranslationContext'
 
 interface LayoutProps {
   params: Promise<{
@@ -107,20 +108,22 @@ export default async function GlobalLayout(props: LayoutProps) {
         <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       </head>
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-black dark:text-white">
-        <ThemeProviders>
-          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-          <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <main className="mb-auto">
-              <script
-                id="language-selector-data"
-                type="application/json"
-                dangerouslySetInnerHTML={{ __html: localesJson }}
-              />
+        <TranslationProvider>
+          <ThemeProviders>
+            <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+            <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+              <main className="mb-auto">
+                <script
+                  id="language-selector-data"
+                  type="application/json"
+                  dangerouslySetInnerHTML={{ __html: localesJson }}
+                />
 
-              {props.children}
-            </main>
-          </SearchProvider>
-        </ThemeProviders>
+                {props.children}
+              </main>
+            </SearchProvider>
+          </ThemeProviders>
+        </TranslationProvider>
       </body>
     </html>
   )
