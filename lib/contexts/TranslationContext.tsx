@@ -48,6 +48,8 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
         const response = await getTranslations(locale)
 
         // Check if translations is already an object or needs parsing
+
+        console.log(response, 'response')
         let translationsData
         if (typeof response.data.translations === 'string') {
           // It's a string, so parse it
