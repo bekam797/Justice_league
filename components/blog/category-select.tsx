@@ -12,7 +12,7 @@ export const CategorySelect = async ({ locale }: CategorySelectProps) => {
   if (!categories) return null
 
   return (
-    <div className="flex flex-col gap-4 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-4 p-3 sm:flex-row sm:items-center sm:justify-between lg:px-6">
       <BlogSectionTitle />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <FilterByText />
