@@ -557,6 +557,112 @@ export async function getAboutPage(locale: string): Promise<AboutPageResponse> {
   }
 }
 
+interface ClientImageGallery {
+  id: number
+  documentId: string
+  src: {
+    id: number
+    url: string
+    alternativeText: string
+    name: string
+  }
+  hoveredSrc: {
+    id: number
+    url: string
+    alternativeText: string
+  }
+  size: string
+}
+
+interface ClientsPageResponse {
+  data: {
+    id: number
+    documentId: string
+    title: string
+    description: string
+    client_image_galleries: ClientImageGallery[]
+    seo: {
+      id: number
+      metaTitle: string
+      metaDescription: string
+      shareImage: {
+        id: number
+        url: string
+        alternativeText: string
+      }
+    }
+    createdAt: string
+    updatedAt: string
+    publishedAt: string
+    locale: string
+    localizations: Array<{
+      id: number
+      documentId: string
+      locale: string
+    }>
+  }
+  meta: Record<string, unknown>
+}
+
+export async function getClientsPage(locale: string): Promise<ClientsPageResponse> {
+  try {
+    const params = {
+      populate: {
+        client_image_galleries: {
+          populate: {
+            src: {
+              fields: ['url', 'alternativeText', 'name'],
+            },
+            hoveredSrc: {
+              fields: ['url', 'alternativeText'],
+            },
+          },
+        },
+        seo: {
+          populate: {
+            shareImage: {
+              fields: ['url', 'alternativeText'],
+            },
+          },
+        },
+      },
+      locale,
+    }
+
+    const clientsPage = await sdk.single('clients-page').find(params)
+    return clientsPage as unknown as ClientsPageResponse
+  } catch (error) {
+    if (error.response) {
+      console.error('API Error:', error.response.data)
+    }
+    return {
+      data: {
+        id: 0,
+        documentId: '',
+        title: '',
+        description: '',
+        client_image_galleries: [],
+        seo: {
+          id: 0,
+          metaTitle: '',
+          metaDescription: '',
+          shareImage: {
+            id: 0,
+            url: '',
+            alternativeText: '',
+          },
+        },
+        createdAt: '',
+        updatedAt: '',
+        publishedAt: '',
+        locale: '',
+        localizations: [],
+      },
+      meta: {},
+    }
+  }
+}
+
 interface TranslationResponse {
   data: {
     id: number

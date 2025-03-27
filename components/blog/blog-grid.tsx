@@ -62,7 +62,7 @@ export default function BlogGrid({ posts }: BlogGridProps) {
   if (!posts?.length) return null
 
   return (
-    <div className="mx-6 my-2 grid grid-cols-2 gap-2 md:grid-cols-4">
+    <div className="mx-3 my-2 grid grid-cols-2 gap-2 md:grid-cols-4 lg:mx-6">
       {posts.map((post, index) => {
         // Large center item
         if (index === 6) {

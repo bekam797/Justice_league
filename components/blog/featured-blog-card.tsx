@@ -20,7 +20,7 @@ export default function FeaturedBlogCard({ title, imageUrl, href }: FeaturedBlog
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <Link href={href} className="mx-6 block">
+      <Link href={href} className="mx-3 block lg:mx-6">
         <div className="group overflow-hidden rounded-lg bg-white/10 transition-colors">
           <div className="flex flex-col gap-6 p-4 md:flex-row">
             {/* Content Side */}
